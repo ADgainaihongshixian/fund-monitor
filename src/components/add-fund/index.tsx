@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import SearchFund from '@/components/SearchFund/SearchFund';
+import SearchFund from '@/components/search-fund';
 import { FundSearchResult } from '@/types';
 import { Add, Close, CheckCircle } from '@mui/icons-material';
 import {

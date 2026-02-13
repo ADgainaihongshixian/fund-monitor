@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
 import './App.css';
-import FundList from '@/components/FundList/FundList';
-import AddFund from '@/components/AddFund/AddFund';
-import Chart from '@/components/Chart/Chart';
+import FundList from '@/components/fund-list';
+import AddFund from '@/components/add-fund';
+import Chart from '@/components/chart';
 import { useFundData } from '@/hooks/useFundData';
 import { useAutoRefresh } from '@/hooks/useAutoRefresh';
 import { FundData } from '@/types';

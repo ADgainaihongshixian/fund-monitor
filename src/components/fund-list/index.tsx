@@ -1,5 +1,5 @@
 import React from 'react';
-import FundCard from '@/components/FundCard/FundCard';
+import FundCard from '@/components/fund-card';
 import { FundData } from '@/types';
 import { AccountBalance, CheckCircle, Search } from '@mui/icons-material';
 import {
