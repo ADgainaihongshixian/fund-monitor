@@ -96,7 +96,7 @@ const SearchFund: React.FC<SearchFundProps> = ({ onSearch, onSelect }) => {
         }}
       />
 
-      {showResults && results.length > 0 && (
+      {showResults && !!results.length && (
         <Paper
           elevation={3}
           sx={{
@@ -106,7 +106,8 @@ const SearchFund: React.FC<SearchFundProps> = ({ onSearch, onSelect }) => {
             mt: 1,
             borderRadius: '0.75rem',
             maxHeight: '300px',
-            overflow: 'auto',
+            overflowY: 'auto',
+            overflowX: 'hidden',
             animation: 'fadeIn 0.3s ease-in-out'
           }}
         >
@@ -170,7 +171,7 @@ const SearchFund: React.FC<SearchFundProps> = ({ onSearch, onSelect }) => {
         </Paper>
       )}
 
-      {showResults && results.length === 0 && !searchLoading && (
+      {showResults && !results.length && !searchLoading && (
         <Paper
           elevation={3}
           sx={{

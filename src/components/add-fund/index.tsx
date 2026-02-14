@@ -42,8 +42,6 @@ const AddFund: React.FC<AddFundProps> = ({ isOpen, onClose, onAddFund, searchFun
     }
   };
 
-
-
   return (
     <Modal
       open={isOpen}
@@ -65,12 +63,16 @@ const AddFund: React.FC<AddFundProps> = ({ isOpen, onClose, onAddFund, searchFun
         bgcolor: 'background.paper',
         borderRadius: '1rem',
         boxShadow: 24,
-        maxWidth: { xs: '100%', sm: '90%', md: '500px' },
+        width: '480px',
+        maxWidth: { xs: '100%', sm: '90%' },
         maxHeight: '90vh',
-        overflow: 'auto',
+        minHeight: '566px',
+        display: 'flex',
+        flexDirection: 'column',
+        overflow: 'hidden',
         animation: 'fadeIn 0.3s ease-in-out'
       }}>
-        <div className="p-6 border-b border-divider flex justify-between items-center">
+        <div className="px-6 py-4 border-b border-divider flex justify-between items-center flex-shrink-0">
           <div className="flex items-center gap-3">
             <div className="bg-primary/10 p-2 rounded-lg">
               <Add className="h-5 w-5 text-primary" />
@@ -94,7 +96,7 @@ const AddFund: React.FC<AddFundProps> = ({ isOpen, onClose, onAddFund, searchFun
         </div>
 
         {successMessage ? (
-          <div className="p-6">
+          <div className="p-6 py-4 flex-shrink-0">
             <div className="flex flex-col items-center justify-center py-8 text-center animate-bounce-in">
               <div className="bg-success/10 p-4 rounded-full mb-4">
                 <CheckCircle className="h-12 w-12 text-success" />
@@ -105,8 +107,8 @@ const AddFund: React.FC<AddFundProps> = ({ isOpen, onClose, onAddFund, searchFun
             </div>
           </div>
         ) : (
-          <div className="p-6">
-            <div className="mb-6">
+          <div className="p-6 py-4 flex-1 flex flex-col min-h-0">
+            <div className="mb-4 flex-shrink-0">
               <Typography variant="body2" sx={{ color: 'info.main', mb: 0.5 }}>
                 输入基金代码或名称搜索并添加
               </Typography>
@@ -114,11 +116,13 @@ const AddFund: React.FC<AddFundProps> = ({ isOpen, onClose, onAddFund, searchFun
                 例如: 000001 或 华夏成长混合
               </Typography>
             </div>
-            <SearchFund
-              onSearch={searchFunds}
-              onSelect={handleSelectFund}
-              isLoading={isAdding}
-            />
+            <div className="flex-1 min-h-0 relative">
+              <SearchFund
+                onSearch={searchFunds}
+                onSelect={handleSelectFund}
+                isLoading={isAdding}
+              />
+            </div>
           </div>
         )}
       </Box>
