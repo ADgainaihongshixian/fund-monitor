@@ -103,7 +103,7 @@ const SearchFund: React.FC<SearchFundProps> = ({ onSearch, onSelect }) => {
             position: 'absolute',
             zIndex: 10,
             width: '100%',
-            mt: 1,
+            mt: 2.5,
             borderRadius: '0.75rem',
             maxHeight: '300px',
             overflowY: 'auto',
