@@ -4,6 +4,7 @@ import Navbar from '@/components/navbar';
 import { usePreciousMetalData } from '@/hooks/usePreciousMetalData';
 import { usePreciousMetalAutoRefresh } from '@/hooks/usePreciousMetalAutoRefresh';
 import usePreciousMetalStore from '@/stores/preciousMetalStore';
+import { GOLD_COLOR } from '@/constant/enum';
 import {
   Refresh,
   Settings,
@@ -45,12 +46,12 @@ const PreciousMetalPage: React.FC = () => {
   };
 
   return (
-    <Box sx={{ minHeight: '100vh', bgcolor: 'background.default' }}>
+    <Box className='min-h-screen bg-gray-50'>
       <Navbar />
 
-      <main>
-        <Container maxWidth="lg" sx={{ px: { xs: 2, sm: 3, md: 4 }, pt: 4 }}>
-          <Stack direction="row" justifyContent="space-between" alignItems="center" spacing={3} sx={{ mb: 4, flexWrap: 'wrap' }}>
+      <main className='pt-4'>
+        <Container maxWidth="lg" sx={{ px: { xs: 2, sm: 3, md: 4 } }}>
+          <Stack direction="row" justifyContent="space-between" alignItems="center" spacing={3} sx={{ mb: 2, flexWrap: 'wrap' }}>
             <Stack direction="row" spacing={2}>
               <Button
                 variant="contained"
@@ -97,7 +98,7 @@ const PreciousMetalPage: React.FC = () => {
                   py: 1.5,
                   transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
                   '&:hover': {
-                    borderColor: 'primary.main',
+                    borderColor: GOLD_COLOR,
                     backgroundColor: 'rgba(245, 158, 11, 0.04)',
                     borderWidth: '1.5px',
                     transform: 'translateY(-2px)',

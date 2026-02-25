@@ -24,16 +24,18 @@ import {
   Close as CloseIcon,
   AccountBalanceWallet
 } from '@mui/icons-material';
+import { GOLD_COLOR } from '@constant/enum';
 
 interface NavItem {
   label: string;
   path: string;
   icon: React.ReactNode;
+  isPreciousMetal?: boolean;
 }
 
 const navItems: NavItem[] = [
-  { label: '基金监控', path: '/', icon: <AccountBalance /> },
-  { label: '贵金属行情', path: '/precious-metal', icon: <Diamond /> },
+  { label: '基金', path: '/', icon: <AccountBalance /> },
+  { label: '贵金属', path: '/precious-metal', icon: <Diamond />, isPreciousMetal: true },
 ];
 
 const Navbar = () => {
@@ -59,6 +61,34 @@ const Navbar = () => {
       return location.pathname === '/' || location.pathname === '/fund';
     }
     return location.pathname === path;
+  };
+
+  const getItemColor = (item: NavItem, active: boolean) => {
+    if (active && item.isPreciousMetal) {
+      return GOLD_COLOR;
+    }
+    return active ? 'primary.main' : 'text.secondary';
+  };
+
+  const getTextColor = (item: NavItem, active: boolean) => {
+    if (active && item.isPreciousMetal) {
+      return GOLD_COLOR;
+    }
+    return active ? 'primary.main' : 'text.primary';
+  };
+
+  const getBgColor = (item: NavItem, active: boolean) => {
+    if (active && item.isPreciousMetal) {
+      return alpha(GOLD_COLOR, 0.1);
+    }
+    return active ? alpha(theme.palette.primary.main, 0.1) : 'transparent';
+  };
+
+  const getHoverBgColor = (item: NavItem, active: boolean) => {
+    if (active && item.isPreciousMetal) {
+      return alpha(GOLD_COLOR, 0.15);
+    }
+    return active ? alpha(theme.palette.primary.main, 0.15) : alpha(theme.palette.grey[500], 0.12);
   };
 
   const drawer = (
@@ -96,41 +126,44 @@ const Navbar = () => {
         </IconButton>
       </Box>
       <List sx={{ flex: 1, pt: 2 }}>
-        {navItems.map((item) => (
-          <ListItem key={item.path} disablePadding>
-            <ListItemButton
-              onClick={() => handleNavigation(item.path)}
-              sx={{
-                mx: 1.5,
-                my: 0.5,
-                borderRadius: 2,
-                transition: 'all 0.2s ease',
-                ...(isActive(item.path) && {
-                  backgroundColor: alpha(theme.palette.primary.main, 0.1),
-                  '&:hover': {
-                    backgroundColor: alpha(theme.palette.primary.main, 0.15),
-                  },
-                }),
-              }}
-            >
-              <ListItemIcon
+        {navItems.map((item) => {
+          const active = isActive(item.path);
+          return (
+            <ListItem key={item.path} disablePadding>
+              <ListItemButton
+                onClick={() => handleNavigation(item.path)}
                 sx={{
-                  minWidth: 40,
-                  color: isActive(item.path) ? 'primary.main' : 'text.secondary',
+                  mx: 1.5,
+                  my: 0.5,
+                  borderRadius: 2,
+                  transition: 'all 0.2s ease',
+                  ...(active && {
+                    backgroundColor: getBgColor(item, true),
+                    '&:hover': {
+                      backgroundColor: getHoverBgColor(item, true),
+                    },
+                  }),
                 }}
               >
-                {item.icon}
-              </ListItemIcon>
-              <ListItemText
-                primary={item.label}
-                primaryTypographyProps={{
-                  fontWeight: isActive(item.path) ? 600 : 400,
-                  color: isActive(item.path) ? 'primary.main' : 'text.primary',
-                }}
-              />
-            </ListItemButton>
-          </ListItem>
-        ))}
+                <ListItemIcon
+                  sx={{
+                    minWidth: 40,
+                    color: getItemColor(item, active),
+                  }}
+                >
+                  {item.icon}
+                </ListItemIcon>
+                <ListItemText
+                  primary={item.label}
+                  primaryTypographyProps={{
+                    fontWeight: active ? 600 : 400,
+                    color: getTextColor(item, active),
+                  }}
+                />
+              </ListItemButton>
+            </ListItem>
+          );
+        })}
       </List>
       <Box sx={{ p: 2, borderTop: '1px solid', borderColor: 'divider' }}>
         <Typography variant="caption" color="text.secondary" sx={{ display: 'block', textAlign: 'center' }}>
@@ -196,37 +229,38 @@ const Navbar = () => {
                 p: 0.5,
               }}
             >
-              {navItems.map((item) => (
-                <Button
-                  key={item.path}
-                  onClick={() => handleNavigation(item.path)}
-                  startIcon={item.icon}
-                  sx={{
-                    px: 2.5,
-                    py: 1,
-                    borderRadius: 2.5,
-                    textTransform: 'none',
-                    fontWeight: isActive(item.path) ? 600 : 500,
-                    fontSize: '0.9375rem',
-                    color: isActive(item.path) ? 'primary.main' : 'text.secondary',
-                    backgroundColor: isActive(item.path)
-                      ? 'white'
-                      : 'transparent',
-                    boxShadow: isActive(item.path)
-                      ? '0 1px 3px rgba(0,0,0,0.08)'
-                      : 'none',
-                    transition: 'all 0.2s ease',
-                    '&:hover': {
-                      backgroundColor: isActive(item.path)
-                        ? 'white'
-                        : alpha(theme.palette.grey[500], 0.12),
-                      transform: 'translateY(-1px)',
-                    },
-                  }}
-                >
-                  {item.label}
-                </Button>
-              ))}
+              {navItems.map((item) => {
+                const active = isActive(item.path);
+                return (
+                  <Button
+                    key={item.path}
+                    onClick={() => handleNavigation(item.path)}
+                    startIcon={
+                      <Box sx={{ color: getItemColor(item, active) }}>
+                        {item.icon}
+                      </Box>
+                    }
+                    sx={{
+                      px: 2.5,
+                      py: 1,
+                      borderRadius: 2.5,
+                      textTransform: 'none',
+                      fontWeight: active ? 600 : 500,
+                      fontSize: '0.9375rem',
+                      color: getTextColor(item, active),
+                      backgroundColor: active ? 'white' : 'transparent',
+                      boxShadow: active ? '0 1px 3px rgba(0,0,0,0.08)' : 'none',
+                      transition: 'all 0.2s ease',
+                      '&:hover': {
+                        backgroundColor: active ? 'white' : alpha(theme.palette.grey[500], 0.12),
+                        transform: 'translateY(-1px)',
+                      },
+                    }}
+                  >
+                    {item.label}
+                  </Button>
+                );
+              })}
             </Box>
           )}
 

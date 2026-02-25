@@ -68,7 +68,7 @@ const FundPage = () => {
   return (
     <div className="min-h-screen bg-gray-50">
       <Navbar />
-      
+
       <main className="pt-4">
         <Container maxWidth="lg" sx={{ px: { xs: 2, sm: 3, md: 4 } }}>
           <div className="flex flex-wrap items-center justify-between gap-3 mb-4">
@@ -78,6 +78,7 @@ const FundPage = () => {
                 color="primary"
                 onClick={refreshFunds}
                 disabled={isLoading}
+                startIcon={isLoading ? <CircularProgress size={14} color="inherit" /> : <Refresh />}
                 sx={{
                   borderRadius: '0.75rem',
                   background: 'linear-gradient(135deg, #3b82f6 0%, #2563eb 100%)',
@@ -99,20 +100,12 @@ const FundPage = () => {
                   },
                 }}
               >
-                <div className="flex items-center gap-2">
-                  <div className="p-1 rounded-md bg-white/20">
-                    {isLoading ? (
-                      <CircularProgress size={14} sx={{ color: 'white' }} />
-                    ) : (
-                      <Refresh className="h-3.5 w-3.5" />
-                    )}
-                  </div>
-                  {isLoading ? '刷新中...' : '刷新'}
-                </div>
+                {isLoading ? '刷新中...' : '刷新'}
               </Button>
               <Button
                 variant="contained"
                 onClick={() => setIsAddFundOpen(true)}
+                startIcon={<Add />}
                 sx={{
                   borderRadius: '0.75rem',
                   background: 'linear-gradient(135deg, #10b981 0%, #059669 100%)',
@@ -131,16 +124,12 @@ const FundPage = () => {
                   },
                 }}
               >
-                <div className="flex items-center gap-2">
-                  <div className="p-1 rounded-md bg-white/20">
-                    <Add className="h-3.5 w-3.5" />
-                  </div>
-                  添加基金
-                </div>
+                添加基金
               </Button>
               <Button
                 variant="outlined"
                 onClick={() => setIsSettingsOpen(true)}
+                startIcon={<Settings />}
                 sx={{
                   borderRadius: '0.75rem',
                   borderWidth: '1.5px',
@@ -161,10 +150,7 @@ const FundPage = () => {
                   },
                 }}
               >
-                <div className="flex items-center gap-2">
-                  <Settings className="h-4 w-4" />
-                  设置
-                </div>
+                设置
               </Button>
             </div>
           </div>
