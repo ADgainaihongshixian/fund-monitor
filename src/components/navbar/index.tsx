@@ -22,6 +22,7 @@ import {
   AccountBalance,
   Diamond,
   Close as CloseIcon,
+  AccountBalanceWallet
 } from '@mui/icons-material';
 
 interface NavItem {
@@ -166,7 +167,7 @@ const Navbar = () => {
                 boxShadow: '0 2px 8px rgba(59, 130, 246, 0.3)',
               }}
             >
-              <AccountBalance sx={{ color: 'white', fontSize: { xs: 18, sm: 20 } }} />
+              <AccountBalanceWallet sx={{ color: 'white', fontSize: { xs: 18, sm: 20 } }} />
             </Box>
             <Typography
               variant="h6"

@@ -1,6 +1,6 @@
-import { defineConfig } from 'vite'
-import react from '@vitejs/plugin-react'
-import path from 'path'
+import { defineConfig } from 'vite';
+import react from '@vitejs/plugin-react';
+import path from 'path';
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -18,25 +18,6 @@ export default defineConfig({
   },
   server: {
     proxy: {
-      '/api/sina': {
-        target: 'https://hq.sinajs.cn',
-        changeOrigin: true,
-        rewrite: (path) => path.replace(/^\/api\/sina/, ''),
-        headers: {
-          'Referer': 'https://finance.sina.com.cn/',
-          'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
-        }
-      },
-      '/api/sina-gu': {
-        target: 'https://gu.sina.cn',
-        changeOrigin: true,
-        rewrite: (path) => path.replace(/^\/api\/sina-gu/, ''),
-        headers: {
-          'Referer': 'https://gu.sina.cn/',
-          'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
-        }
-      },
-
       // 搜索基金接口代理
       '/api/eastmoney': {
         target: 'https://fund.eastmoney.com',
