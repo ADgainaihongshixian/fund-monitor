@@ -47,12 +47,12 @@ const FundCard: React.FC<FundCardProps> = ({ fund, onRemove, onClick }) => {
     >
       <CardContent sx={{ p: 2.5 }}>
         <div className="flex justify-between items-start mb-5">
-          <div className="flex-1">
-            <div className="flex items-center gap-2 mb-2">
-              <Typography variant="h6" component="h3" sx={{ fontWeight: 600, color: 'text.primary', fontSize: '1.125rem', flex: 1, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+          <div className="flex-1 min-w-0">
+            <div className="flex items-start gap-2 mb-2">
+              <Typography variant="h6" component="h3" sx={{ fontWeight: 600, color: 'text.primary', fontSize: '1.125rem', flex: 1, lineHeight: 1.3, whiteSpace: 'nowrap', textOverflow: 'ellipsis', overflow: 'hidden' }}>
                 {name}
               </Typography>
-              <Badge variant="standard" color="info" sx={{ fontSize: '0.75rem', border: '1px solid', borderColor: 'info.main', backgroundColor: 'background.paper', color: 'info.main', padding: '0 4px', borderRadius: '4px', '& .MuiBadge-badge': { border: '1px solid', borderColor: 'info.main', backgroundColor: 'background.paper', color: 'info.main', padding: '0 4px', borderRadius: '4px' } }}>
+              <Badge variant="standard" color="info" sx={{ fontSize: '0.75rem', border: '1px solid', borderColor: 'info.main', backgroundColor: 'background.paper', color: 'info.main', padding: '0 4px', borderRadius: '4px', flexShrink: 0, '& .MuiBadge-badge': { border: '1px solid', borderColor: 'info.main', backgroundColor: 'background.paper', color: 'info.main', padding: '0 4px', borderRadius: '4px' } }}>
                 {code}
               </Badge>
             </div>
@@ -78,7 +78,7 @@ const FundCard: React.FC<FundCardProps> = ({ fund, onRemove, onClick }) => {
               },
               transition: 'all 0.3s ease',
               ml: '4px',
-              p: '3px',
+              p: 0,
               borderRadius: '50%'
             }}
             aria-label="remove fund"

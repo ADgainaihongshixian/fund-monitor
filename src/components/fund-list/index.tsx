@@ -44,7 +44,7 @@ const FundList: React.FC<FundListProps> = ({ funds, onRemoveFund, onFundClick })
       : (
         <Grid container spacing={3}>
           {funds.map((fund, index) => (
-            <Grid item key={fund.code} xs={12} sm={6} lg={4} xl={3} sx={{ animationDelay: `${index * 0.05}s`, animation: 'fadeIn 0.3s ease-in-out' }}>
+            <Grid item key={fund.code} xs={12} sm={6} md={6} lg={4} sx={{ animationDelay: `${index * 0.05}s`, animation: 'fadeIn 0.3s ease-in-out' }}>
               <FundCard
                 fund={fund}
                 onRemove={onRemoveFund}

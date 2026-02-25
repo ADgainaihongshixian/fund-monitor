@@ -27,6 +27,17 @@ export default defineConfig({
           'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
         }
       },
+      '/api/sina-gu': {
+        target: 'https://gu.sina.cn',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/api\/sina-gu/, ''),
+        headers: {
+          'Referer': 'https://gu.sina.cn/',
+          'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
+        }
+      },
+
+      // 搜索基金接口代理
       '/api/eastmoney': {
         target: 'https://fund.eastmoney.com',
         changeOrigin: true,
@@ -36,6 +47,8 @@ export default defineConfig({
           'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
         }
       },
+
+      // 基金实时估值相关数据接口代理
       '/api/fundgz': {
         target: 'http://fundgz.1234567.com.cn',
         changeOrigin: true,
@@ -45,6 +58,8 @@ export default defineConfig({
           'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
         }
       },
+
+      // 基金历史数据接口代理
       '/api/fund': {
         target: 'https://api.fund.eastmoney.com',
         changeOrigin: true,
@@ -53,7 +68,18 @@ export default defineConfig({
           'Referer': 'https://fund.eastmoney.com/',
           'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
         }
-      }
+      },
+
+      // 贵金属数据接口代理 (新浪财经)
+      '/api/sina-metal': {
+        target: 'https://hq.sinajs.cn',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/api\/sina-metal/, ''),
+        headers: {
+          'Referer': 'https://finance.sina.com.cn/',
+          'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
+        }
+      },
     }
   }
 })

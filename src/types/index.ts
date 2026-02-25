@@ -57,3 +57,34 @@ export interface EastmoneyHistoryResponse {
     }>;
   };
 }
+
+export interface PreciousMetalData {
+  symbol: string;
+  name: string;
+  nameEn: string;
+  currentPrice: number;
+  openPrice: number;
+  highPrice: number;
+  lowPrice: number;
+  prevClosePrice: number;
+  change: number;
+  changePercent: number;
+  lastUpdate: string;
+  isRising: boolean;
+  currency: 'USD' | 'CNY';
+  cnyPrice?: number;
+}
+
+export interface PreciousMetalConfig {
+  symbol: string;
+  name: string;
+  nameEn: string;
+  apiCode: string;
+}
+
+export const PRECIOUS_METALS: PreciousMetalConfig[] = [
+  { symbol: 'XAU', name: '伦敦金', nameEn: 'Gold', apiCode: 'XAU' },
+  { symbol: 'XAG', name: '伦敦银', nameEn: 'Silver', apiCode: 'XAG' },
+  { symbol: 'XPT', name: '铂金期货', nameEn: 'Platinum', apiCode: 'XPT' },
+  { symbol: 'XPD', name: '钯金期货', nameEn: 'Palladium', apiCode: 'XPD' },
+];
