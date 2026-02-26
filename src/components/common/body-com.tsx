@@ -11,8 +11,6 @@ interface BodyComProps {
 const BodyCom = (props: BodyComProps) => {
     const { children = null, otherChildren = null, footer = null } = props;
     const [navbarHeight, setNavbarHeight] = useState(0);
-    console.log('##navbarHeight', navbarHeight);
-
 
     return (
         <Box className='min-h-screen bg-gray-50'>
