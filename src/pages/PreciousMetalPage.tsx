@@ -50,7 +50,7 @@ const PreciousMetalPage = () => {
       }
     >
       <Container maxWidth="lg" sx={{ px: { xs: 2, sm: 0, md: 0 } }}>
-        <Stack direction="row" justifyContent="space-between" alignItems="center" spacing={3} sx={{ mb: 2, flexWrap: 'wrap' }}>
+        <Stack direction="row" justifyContent="end" alignItems="center" spacing={3} sx={{ mb: 2, flexWrap: 'wrap' }}>
           <Stack direction="row" spacing={2}>
             <Button
               variant="contained"
