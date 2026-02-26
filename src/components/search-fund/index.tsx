@@ -93,6 +93,7 @@ const SearchFund: React.FC<SearchFundProps> = ({ onSearch, onSelect }) => {
           endAdornment: searchLoading && (
             <CircularProgress size={20} color="primary" sx={{ ml: 1 }} />
           ),
+          autoComplete: 'off',
         }}
       />
 
