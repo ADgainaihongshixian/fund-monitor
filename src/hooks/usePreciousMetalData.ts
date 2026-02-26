@@ -12,9 +12,7 @@ export const usePreciousMetalData = () => {
   } = usePreciousMetalStore();
 
   useEffect(() => {
-    if (metals.length === 0) {
-      refreshMetals();
-    }
+    !metals.length && refreshMetals();
   }, []);
 
   const handleRefresh = useCallback(async () => {

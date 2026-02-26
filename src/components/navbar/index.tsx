@@ -1,5 +1,7 @@
-import { useState } from 'react';
+import { useLayoutEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
+import { GOLD_COLOR } from '@constant/enum';
+import { useResizeObserver } from '@hooks/useResizeObserver';
 import {
   AppBar,
   Toolbar,
@@ -24,7 +26,11 @@ import {
   Close as CloseIcon,
   AccountBalanceWallet
 } from '@mui/icons-material';
-import { GOLD_COLOR } from '@constant/enum';
+
+
+interface NavbarProps {
+  setNavbarHeight: (height: number) => void;
+}
 
 interface NavItem {
   label: string;
@@ -38,12 +44,18 @@ const navItems: NavItem[] = [
   { label: '贵金属', path: '/precious-metal', icon: <Diamond />, isPreciousMetal: true },
 ];
 
-const Navbar = () => {
+const Navbar = (props: NavbarProps) => {
+  const { setNavbarHeight } = props;
   const [mobileOpen, setMobileOpen] = useState(false);
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
   const location = useLocation();
   const navigate = useNavigate();
+  const [targetRef, size] = useResizeObserver();
+
+  useLayoutEffect(() => {
+    setNavbarHeight(size?.height || 64);
+  }, [size?.height]);
 
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
@@ -176,7 +188,7 @@ const Navbar = () => {
   return (
     <>
       <AppBar
-        position="sticky"
+        position="static"
         elevation={0}
         sx={{
           backgroundColor: 'rgba(255, 255, 255, 0.95)',
@@ -185,6 +197,7 @@ const Navbar = () => {
           borderColor: 'divider',
           transition: 'all 0.3s ease',
         }}
+        ref={targetRef}
       >
         <Toolbar sx={{ px: { xs: 2, sm: 3, md: 4 } }}>
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>

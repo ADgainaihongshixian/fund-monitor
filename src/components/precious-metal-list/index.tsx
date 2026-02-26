@@ -14,25 +14,26 @@ interface PreciousMetalListProps {
 }
 
 const PreciousMetalList: React.FC<PreciousMetalListProps> = ({ metals }) => {
-  if (metals.length === 0) {
-    return (
-      <Box
-        sx={{
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-          py: 8,
-          animation: 'fadeIn 0.3s ease-in-out',
-        }}
-      >
-        <Box
-          sx={{
-            bgcolor: 'action.hover',
-            p: 3,
-            borderRadius: '1.5rem',
-            mb: 3,
-          }}
-        >
+  return (
+    !!metals.length ?
+      <Grid container spacing={3}>
+        {metals.map((metal, index) => (
+          <Grid
+            item
+            key={metal.symbol}
+            xs={12}
+            sm={6}
+            md={6}
+            lg={4}
+            sx={{ animationDelay: `${index * 0.05}s`, animation: 'fadeIn 0.3s ease-in-out' }}
+          >
+            <PreciousMetalCard metal={metal} />
+          </Grid>
+        ))}
+      </Grid>
+      :
+      <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', py: 8, animation: 'fadeIn 0.3s ease-in-out' }}>
+        <Box sx={{ bgcolor: 'action.hover', p: 3, borderRadius: '1.5rem', mb: 3 }}>
           <Diamond sx={{ fontSize: 64, color: 'text.disabled' }} />
         </Box>
         <Typography
@@ -52,15 +53,7 @@ const PreciousMetalList: React.FC<PreciousMetalListProps> = ({ metals }) => {
           <Paper
             elevation={0}
             variant="outlined"
-            sx={{
-              p: 2,
-              display: 'flex',
-              alignItems: 'center',
-              gap: 1.5,
-              borderRadius: '0.75rem',
-              borderColor: 'divider',
-            }}
-          >
+            sx={{ p: 2, display: 'flex', alignItems: 'center', gap: 1.5, borderRadius: '0.75rem', borderColor: 'divider' }}>
             <Diamond sx={{ fontSize: 20, color: 'text.secondary' }} />
             <Typography variant="body2" sx={{ color: 'text.primary' }}>
               伦敦金、伦敦银
@@ -69,14 +62,7 @@ const PreciousMetalList: React.FC<PreciousMetalListProps> = ({ metals }) => {
           <Paper
             elevation={0}
             variant="outlined"
-            sx={{
-              p: 2,
-              display: 'flex',
-              alignItems: 'center',
-              gap: 1.5,
-              borderRadius: '0.75rem',
-              borderColor: 'divider',
-            }}
+            sx={{ p: 2, display: 'flex', alignItems: 'center', gap: 1.5, borderRadius: '0.75rem', borderColor: 'divider' }}
           >
             <Diamond sx={{ fontSize: 20, color: 'text.secondary' }} />
             <Typography variant="body2" sx={{ color: 'text.primary' }}>
@@ -85,28 +71,6 @@ const PreciousMetalList: React.FC<PreciousMetalListProps> = ({ metals }) => {
           </Paper>
         </Box>
       </Box>
-    );
-  }
-
-  return (
-    <Grid container spacing={3}>
-      {metals.map((metal, index) => (
-        <Grid
-          item
-          key={metal.symbol}
-          xs={12}
-          sm={6}
-          md={6}
-          lg={4}
-          sx={{
-            animationDelay: `${index * 0.05}s`,
-            animation: 'fadeIn 0.3s ease-in-out',
-          }}
-        >
-          <PreciousMetalCard metal={metal} />
-        </Grid>
-      ))}
-    </Grid>
   );
 };
 

@@ -16,13 +16,13 @@ const FundList: React.FC<FundListProps> = ({ funds, onRemoveFund, onFundClick })
     !funds.length
       ? (
         <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', py: 8, animation: 'fadeIn 0.3s ease-in-out' }}>
-          <Box sx={{ bgcolor: 'primary.light', p: 3, borderRadius: '1.5rem', mb: 3 }}>
-            <AccountBalance className="h-16 w-16 text-primary mx-auto" />
+          <Box sx={{ bgcolor: 'action.hover', p: 3, borderRadius: '1.5rem', mb: 3 }}>
+            <AccountBalance sx={{ fontSize: 64, color: 'text.disabled' }} />
           </Box>
           <Typography variant="h5" component="h3" sx={{ fontWeight: 600, color: 'text.primary', mb: 1.5, textAlign: 'center' }}>
             还没有添加基金
           </Typography>
-          <Typography variant="body1" sx={{ color: 'info.main', mb: 6, maxWidth: '400px', textAlign: 'center' }}>
+          <Typography variant="body1" sx={{ color: 'text.secondary', mb: 6, maxWidth: '500px', textAlign: 'center' }}>
             点击上方的"添加基金"按钮，输入基金代码或名称来添加您关注的基金
           </Typography>
           <Box sx={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: 2 }}>
