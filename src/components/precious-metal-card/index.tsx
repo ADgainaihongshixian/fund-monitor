@@ -133,12 +133,12 @@ const PreciousMetalCard: React.FC<PreciousMetalCardProps> = ({ metal }) => {
           </Box>
         </Stack>
 
-        <Grid container>
-          {priceMaps.map((item) => {
+        <Grid container spacing={1}>
+          {priceMaps.map((item, index) => {
             const { label, value, icon } = item
             return (
-              <Grid item xs={6} key={item.label}>
-                <Stack direction="row" alignItems="center" spacing={1}>
+              <Grid item xs={6} key={item.label} sx={{ display: 'flex' }}>
+                <Stack direction="row" alignItems="center" spacing={1} sx={{ marginLeft: index % 2 !== 0 ? 'auto' : 'unset' }}>
                   {icon}
                   <Box>
                     <Typography variant="caption" sx={{ color: 'text.secondary', display: 'block' }}>
