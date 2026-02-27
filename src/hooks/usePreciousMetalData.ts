@@ -9,6 +9,8 @@ export const usePreciousMetalData = () => {
     error,
     refreshMetals,
     clearError,
+    exchangeRate,
+    exchangeRateError,
   } = usePreciousMetalStore();
 
   useEffect(() => {
@@ -30,5 +32,7 @@ export const usePreciousMetalData = () => {
     error,
     refreshMetals: handleRefresh,
     clearError: handleClearError,
+    exchangeRate,
+    exchangeRateError,
   };
 };

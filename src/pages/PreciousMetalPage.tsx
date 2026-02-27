@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import PreciousMetalList from '@/components/precious-metal-list';
-import Navbar from '@/components/navbar';
 import { usePreciousMetalData } from '@/hooks/usePreciousMetalData';
 import { usePreciousMetalAutoRefresh } from '@/hooks/usePreciousMetalAutoRefresh';
 import usePreciousMetalStore from '@/stores/preciousMetalStore';
@@ -9,21 +8,11 @@ import SecondaryCard from '@/components/common/secondary-card';
 import ErrorAlert from '@/components/common/error-alert';
 import SettingDialog from '@/components/common/setting-dialog';
 import BodyCom from '@/components/common/body-com';
-import {
-  Refresh,
-  Settings,
-} from '@mui/icons-material';
-import {
-  Button,
-  Container,
-  Box,
-  Typography,
-  CircularProgress,
-  Stack,
-} from '@mui/material';
+import { Refresh, Settings, Warning } from '@mui/icons-material';
+import { Button, Container, Box, Typography, CircularProgress, Stack, Alert } from '@mui/material';
 
 const PreciousMetalPage = () => {
-  const { metals, isLoading, lastUpdate, error, refreshMetals } = usePreciousMetalData();
+  const { metals, isLoading, lastUpdate, error, refreshMetals, exchangeRate, exchangeRateError } = usePreciousMetalData();
   const { isAutoRefreshEnabled } = usePreciousMetalAutoRefresh();
   const { autoRefresh, refreshInterval, setAutoRefresh, setRefreshInterval } = usePreciousMetalStore();
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
@@ -110,8 +99,20 @@ const PreciousMetalPage = () => {
           </Stack>
         </Stack>
 
-        <SecondaryCard isAutoRefreshEnabled={isAutoRefreshEnabled} lastUpdate={lastUpdate} length={metals.length} />
+        <SecondaryCard isAutoRefreshEnabled={isAutoRefreshEnabled} lastUpdate={lastUpdate} length={metals.length} rate={exchangeRate?.rate?.toFixed(4) ?? 0} />
         <ErrorAlert error={error} />
+
+        {exchangeRateError && (
+          <Alert
+            severity="warning"
+            icon={<Warning />}
+            sx={{ mb: 3, borderRadius: '0.75rem', '& .MuiAlert-icon': { alignItems: 'center' }, }}
+          >
+            <Typography variant="body2">
+              汇率获取失败：{exchangeRateError}，人民币价格暂不可用
+            </Typography>
+          </Alert>
+        )}
 
         <Box sx={{ mb: 8 }}>
           <Stack direction="row" justifyContent="space-between" alignItems="center" spacing={2} sx={{ mb: 4 }}>

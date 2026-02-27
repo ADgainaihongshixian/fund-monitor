@@ -1,5 +1,6 @@
-import React from 'react';
+import { usePreciousMetalData } from '@/hooks/usePreciousMetalData';
 import { PreciousMetalData } from '@/types';
+import { calculateCnyPrice } from '@/utils/calculateCnyPrice';
 import {
   TrendingUp,
   TrendingDown,
@@ -9,6 +10,7 @@ import {
   ArrowUpward,
   ArrowDownward,
   Diamond,
+  CurrencyYuan,
 } from '@mui/icons-material';
 import {
   Card,
@@ -23,16 +25,17 @@ import {
 
 interface PreciousMetalCardProps {
   metal: PreciousMetalData;
-}
+};
 
-const PreciousMetalCard: React.FC<PreciousMetalCardProps> = ({ metal }) => {
+const PreciousMetalCard = ({ metal }: PreciousMetalCardProps) => {
   const { name, nameEn, currentPrice, openPrice, highPrice, lowPrice, prevClosePrice, change, changePercent, lastUpdate, isRising } = metal;
+  const { exchangeRate } = usePreciousMetalData();
 
   const priceMaps = [
     { label: '开盘价', value: openPrice.toFixed(2), icon: <ShowChart sx={{ fontSize: 16, color: 'text.secondary' }} /> },
     { label: '昨收价', value: prevClosePrice.toFixed(2), icon: <AttachMoney sx={{ fontSize: 16, color: 'text.secondary' }} /> },
-    { label: '最高价', value: highPrice.toFixed(2), icon: <ArrowUpward sx={{ fontSize: 16, color: 'success.main' }} /> },
-    { label: '最低价', value: lowPrice.toFixed(2), icon: <ArrowDownward sx={{ fontSize: 16, color: 'error.main' }} /> },
+    { label: '最高价', value: highPrice.toFixed(2), icon: <ArrowUpward sx={{ fontSize: 16, color: 'error.main' }} /> },
+    { label: '最低价', value: lowPrice.toFixed(2), icon: <ArrowDownward sx={{ fontSize: 16, color: 'success.main' }} /> },
   ];
 
   return (
@@ -47,6 +50,9 @@ const PreciousMetalCard: React.FC<PreciousMetalCardProps> = ({ metal }) => {
           boxShadow: '0 8px 30px rgba(0,0,0,0.12)',
           borderColor: 'primary.light',
           transform: 'translateY(-2px)',
+          '& .hover-mask': {
+            opacity: 1,
+          },
         },
         position: 'relative',
         overflow: 'hidden',
@@ -94,9 +100,12 @@ const PreciousMetalCard: React.FC<PreciousMetalCardProps> = ({ metal }) => {
         <Stack direction="row" justifyContent="space-between" alignItems="flex-end" sx={{ mb: 2 }}>
           <Box>
             <Typography variant="body2" sx={{ color: 'text.secondary', mb: 0.5 }}>
-              当前价格
+              当前价格：
+              <Typography variant="caption" sx={{ color: 'text.secondary' }}>
+                美元/盎司 （人民币/克）
+              </Typography>
             </Typography>
-            <Stack direction="row" alignItems="baseline" spacing={1}>
+            <Stack direction="row" alignItems="baseline" spacing={0.5}>
               <Typography
                 variant="h4"
                 component="p"
@@ -104,9 +113,21 @@ const PreciousMetalCard: React.FC<PreciousMetalCardProps> = ({ metal }) => {
               >
                 {currentPrice.toFixed(2)}
               </Typography>
-              <Typography variant="caption" sx={{ color: 'text.secondary' }}>
-                美元/盎司
-              </Typography>
+
+              {!!exchangeRate?.rate &&
+                <Stack direction="row" alignItems="center">
+                  <Typography variant="body2" sx={{ color: 'text.secondary', fontWeight: 500 }}>
+                    （
+                  </Typography>
+                  <CurrencyYuan sx={{ fontSize: 14, color: 'text.secondary' }} />
+                  <Typography variant="body2" sx={{ color: 'text.secondary', fontWeight: 500 }}>
+                    {calculateCnyPrice(exchangeRate.rate, currentPrice)}
+                  </Typography>
+                  <Typography variant="body2" sx={{ color: 'text.secondary', fontWeight: 500 }}>
+                    ）
+                  </Typography>
+                </Stack>
+              }
             </Stack>
           </Box>
           <Box sx={{ textAlign: 'right' }}>
@@ -144,8 +165,20 @@ const PreciousMetalCard: React.FC<PreciousMetalCardProps> = ({ metal }) => {
                     <Typography variant="caption" sx={{ color: 'text.secondary', display: 'block' }}>
                       {label}
                     </Typography>
-                    <Typography variant="body2" sx={{ fontWeight: 500, color: 'text.primary' }}>
+                    <Typography variant="body2" sx={{ fontWeight: 500, color: 'text.primary', display: 'flex', alignItems: 'end' }}>
                       {value}
+                      {!!exchangeRate?.rate && <>
+                        <Typography variant="body2" sx={{ color: 'text.secondary', fontSize: 12, fontWeight: 500 }}>
+                          （
+                        </Typography>
+                        <CurrencyYuan sx={{ fontSize: 12, color: 'text.secondary', marginBottom: '3px' }} />
+                        <Typography variant="body2" sx={{ color: 'text.secondary', fontSize: 12, fontWeight: 500 }}>
+                          {calculateCnyPrice(exchangeRate.rate, +value)}
+                        </Typography>
+                        <Typography variant="body2" sx={{ color: 'text.secondary', fontSize: 12, fontWeight: 500 }}>
+                          ）
+                        </Typography>
+                      </>}
                     </Typography>
                   </Box>
                 </Stack>
@@ -173,6 +206,7 @@ const PreciousMetalCard: React.FC<PreciousMetalCardProps> = ({ metal }) => {
       </CardContent>
 
       <Box
+        className="hover-mask"
         sx={{
           position: 'absolute',
           inset: 0,
@@ -183,9 +217,6 @@ const PreciousMetalCard: React.FC<PreciousMetalCardProps> = ({ metal }) => {
           opacity: 0,
           transition: 'opacity 0.3s ease',
           pointerEvents: 'none',
-          '&:hover': {
-            opacity: 1,
-          },
         }}
       />
     </Card>

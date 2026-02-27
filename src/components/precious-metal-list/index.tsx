@@ -1,4 +1,3 @@
-import React from 'react';
 import { PreciousMetalData } from '@/types';
 import PreciousMetalCard from '@/components/precious-metal-card';
 import { Diamond } from '@mui/icons-material';
@@ -11,9 +10,10 @@ import {
 
 interface PreciousMetalListProps {
   metals: PreciousMetalData[];
-}
+  rate: number;
+};
 
-const PreciousMetalList: React.FC<PreciousMetalListProps> = ({ metals }) => {
+const PreciousMetalList = ({ metals, rate }: PreciousMetalListProps) => {
   return (
     !!metals.length ?
       <Grid container spacing={3}>

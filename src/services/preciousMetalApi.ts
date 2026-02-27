@@ -1,14 +1,8 @@
 import axios from 'axios';
 import { PreciousMetalData, ApiResponse, PRECIOUS_METALS, PreciousMetalConfig } from '@/types';
+import { SINA_METAL_CODES } from '@/constant/enum';
 
 const BASE_URL = '/api/sina-metal';
-
-const SINA_METAL_CODES: Record<string, string> = {
-  XAU: 'hf_XAU',
-  XAG: 'hf_XAG',
-  XPT: 'hf_XPT',
-  XPD: 'hf_XPD',
-};
 
 const apiClient = axios.create({
   baseURL: BASE_URL,
@@ -124,7 +118,7 @@ const preciousMetalApi = {
       }
 
       const validSymbols = symbols.filter(s => SINA_METAL_CODES[s]);
-      if (validSymbols.length === 0) {
+      if (!validSymbols.length) {
         return {
           success: false,
           data: [],
@@ -149,7 +143,7 @@ const preciousMetalApi = {
         }
       }
 
-      if (results.length === 0) {
+      if (!results.length) {
         return {
           success: false,
           data: [],

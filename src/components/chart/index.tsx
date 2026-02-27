@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
-import fundApi from '@/services/api';
+import fundApi from '@/services/fundApi';
 import { formatDate, formatNumber, formatPercentage } from '@/utils/formatter';
 import { ErrorOutline } from '@mui/icons-material';
 import {

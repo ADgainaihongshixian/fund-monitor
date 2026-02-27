@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import preciousMetalApi from '@/services/preciousMetalApi';
+import exchangeRateApi, { ExchangeRateData } from '@/services/exchangeRateApi';
 import { PreciousMetalData } from '@/types';
 
 interface PreciousMetalStore {
@@ -10,6 +11,8 @@ interface PreciousMetalStore {
   error: string | null;
   autoRefresh: boolean;
   refreshInterval: number;
+  exchangeRate: ExchangeRateData | null;
+  exchangeRateError: string | null;
 
   refreshMetals: () => Promise<void>;
   setAutoRefresh: (enabled: boolean) => void;
@@ -26,21 +29,35 @@ export const usePreciousMetalStore = create<PreciousMetalStore>()(
       error: null,
       autoRefresh: true,
       refreshInterval: 60000,
+      exchangeRate: null,
+      exchangeRateError: null,
 
       refreshMetals: async () => {
-        set({ isLoading: true, error: null });
+        set({ isLoading: true, error: null, exchangeRateError: null });
 
         try {
-          const response = await preciousMetalApi.getPreciousMetalsData();
+          const [metalsResponse, rateResponse] = await Promise.all([
+            preciousMetalApi.getPreciousMetalsData(),
+            exchangeRateApi.getUSDCNYRate(),
+          ]);
 
-          if (response.success) {
+          const exchangeRateError = rateResponse.success ? null : rateResponse.message;
+
+          if (metalsResponse.success) {
             set({
-              metals: response.data,
-              lastUpdate: new Date().toLocaleTimeString(),
+              metals: metalsResponse.data,
+              lastUpdate: new Date().toLocaleString('en-CA', { hour12: false }).replace(',', ''),
               isLoading: false,
+              exchangeRate: rateResponse.success ? rateResponse.data : null,
+              exchangeRateError,
             });
           } else {
-            set({ error: response.message, isLoading: false });
+            set({
+              error: metalsResponse.message,
+              isLoading: false,
+              exchangeRate: rateResponse.success ? rateResponse.data : null,
+              exchangeRateError,
+            });
           }
         } catch (error) {
           set({ error: '获取贵金属数据失败', isLoading: false });
@@ -56,7 +73,7 @@ export const usePreciousMetalStore = create<PreciousMetalStore>()(
       },
 
       clearError: () => {
-        set({ error: null });
+        set({ error: null, exchangeRateError: null });
       },
     }),
     {

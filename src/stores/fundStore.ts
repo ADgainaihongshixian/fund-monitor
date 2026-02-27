@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-import fundApi from '@/services/api';
+import fundApi from '@/services/fundApi';
 import { FundData, FundSearchResult } from '@/types';
 import { generateCacheKey, fundDataCache } from '@/utils/cache';
 
