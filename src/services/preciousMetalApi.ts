@@ -3,42 +3,10 @@ import { SINA_METAL_CODES } from '@/constant/enum';
 import { PRECIOUS_METAL_BASE_URL } from '@/constant/api';
 import { createApiClient } from '@/utils/apiClient';
 import { requestInterceptor } from '@/utils/requestInterceptor';
+import { handleApiError } from '@/utils/handleApiError';
 
 const apiClient = createApiClient({ baseURL: PRECIOUS_METAL_BASE_URL, accept: '*/*' });
 requestInterceptor(apiClient);
-
-const handleApiError = (error: any): string => {
-  if (error.response) {
-    switch (error.response.status) {
-      case 400:
-        return '请求参数错误';
-      case 401:
-        return '未授权访问';
-      case 403:
-        return '访问被拒绝';
-      case 404:
-        return '请求的资源不存在';
-      case 500:
-        return '服务器内部错误';
-      case 502:
-        return '网关错误';
-      case 503:
-        return '服务暂时不可用';
-      case 504:
-        return '请求超时';
-      default:
-        return `服务器返回错误 (${error.response.status})`;
-    }
-  } else if (error.request) {
-    return '网络连接失败，请检查网络设置';
-  } else if (error.code === 'ECONNABORTED') {
-    return '请求超时，请稍后重试';
-  } else if (error.code === 'ENOTFOUND') {
-    return '无法连接到服务器，请检查网络连接';
-  } else {
-    return error.message || '请求失败，请稍后重试';
-  }
-};
 
 const parseSinaMetalData = (responseText: string, symbol: string, config: PreciousMetalConfig): PreciousMetalData | null => {
   try {
