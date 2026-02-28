@@ -10,7 +10,6 @@ import {
   ArrowUpward,
   ArrowDownward,
   Diamond,
-  CurrencyYuan,
 } from '@mui/icons-material';
 import {
   Card,
@@ -82,11 +81,11 @@ const PreciousMetalCard = ({ metal }: PreciousMetalCardProps) => {
               />
             </Stack>
             <Stack direction="row" alignItems="center" spacing={1}>
-              {isRising ? (
+              {isRising ?
                 <TrendingUp sx={{ fontSize: 16, color: 'error.main' }} />
-              ) : (
+                :
                 <TrendingDown sx={{ fontSize: 16, color: 'success.main' }} />
-              )}
+              }
               <Typography
                 variant="body2"
                 sx={{ fontWeight: 500, color: isRising ? 'error.main' : 'success.main' }}
@@ -113,18 +112,10 @@ const PreciousMetalCard = ({ metal }: PreciousMetalCardProps) => {
               >
                 {currentPrice.toFixed(2)}
               </Typography>
-
               {!!exchangeRate?.rate &&
                 <Stack direction="row" alignItems="center">
-                  <Typography variant="body2" sx={{ color: 'text.secondary', fontWeight: 500 }}>
-                    （
-                  </Typography>
-                  <CurrencyYuan sx={{ fontSize: 14, color: 'text.secondary' }} />
-                  <Typography variant="body2" sx={{ color: 'text.secondary', fontWeight: 500 }}>
-                    {calculateCnyPrice(exchangeRate.rate, currentPrice)}
-                  </Typography>
-                  <Typography variant="body2" sx={{ color: 'text.secondary', fontWeight: 500 }}>
-                    ）
+                  <Typography component="span" variant="body2" sx={{ color: 'text.secondary', fontSize: 14, fontWeight: 500 }}>
+                    （￥{calculateCnyPrice(exchangeRate.rate, currentPrice)}）
                   </Typography>
                 </Stack>
               }
@@ -150,6 +141,7 @@ const PreciousMetalCard = ({ metal }: PreciousMetalCardProps) => {
             </Stack>
             <Typography variant="caption" sx={{ color: isRising ? 'error.main' : 'success.main' }}>
               {isRising ? '+' : ''}{change}
+              {!!exchangeRate?.rate && `（￥${calculateCnyPrice(exchangeRate.rate, change)}）`}
             </Typography>
           </Box>
         </Stack>
@@ -167,18 +159,11 @@ const PreciousMetalCard = ({ metal }: PreciousMetalCardProps) => {
                     </Typography>
                     <Typography variant="body2" sx={{ fontWeight: 500, color: 'text.primary', display: 'flex', alignItems: 'end' }}>
                       {value}
-                      {!!exchangeRate?.rate && <>
+                      {!!exchangeRate?.rate &&
                         <Typography component="span" variant="body2" sx={{ color: 'text.secondary', fontSize: 12, fontWeight: 500 }}>
-                          （
+                          （￥{calculateCnyPrice(exchangeRate.rate, +value)}）
                         </Typography>
-                        <CurrencyYuan sx={{ fontSize: 12, color: 'text.secondary', marginBottom: '3px' }} />
-                        <Typography component="span" variant="body2" sx={{ color: 'text.secondary', fontSize: 12, fontWeight: 500 }}>
-                          {calculateCnyPrice(exchangeRate.rate, +value)}
-                        </Typography>
-                        <Typography component="span" variant="body2" sx={{ color: 'text.secondary', fontSize: 12, fontWeight: 500 }}>
-                          ）
-                        </Typography>
-                      </>}
+                      }
                     </Typography>
                   </Box>
                 </Stack>
