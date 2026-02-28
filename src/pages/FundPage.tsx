@@ -21,7 +21,9 @@ import {
   Button,
   IconButton,
   Container,
-  Modal,
+  Dialog,
+  DialogTitle,
+  DialogContent,
   Box,
   Typography,
   Badge,
@@ -65,57 +67,46 @@ const FundPage = () => {
           onClose={() => setIsAddFundOpen(false)}
           onAddFund={handleAddFund}
         />
-        <Modal
+        <Dialog
           open={!!selectedFund}
           onClose={handleCloseDetail}
-          aria-labelledby="fund-detail-modal-title"
-          aria-describedby="fund-detail-modal-description"
-          sx={{
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            p: { xs: 2, sm: 3 }
+          aria-labelledby="fund-detail-dialog-title"
+          aria-describedby="fund-detail-dialog-description"
+          maxWidth="md"
+          fullWidth
+          PaperProps={{
+            sx: { borderRadius: '1rem', maxHeight: '90vh' },
           }}
         >
-          <Box sx={{
-            position: 'relative',
-            bgcolor: 'background.paper',
-            borderRadius: '1rem',
-            boxShadow: 24,
-            maxWidth: { xs: '100%', sm: '90%', md: '80%', lg: '70%' },
-            maxHeight: '90vh',
-            overflow: 'auto',
-            animation: 'fadeIn 0.3s ease-in-out'
-          }}>
-            <div className="p-6 border-b border-divider flex justify-between items-center">
-              <div className="flex items-center gap-3">
-                <div className="bg-primary/10 p-2 rounded-lg">
-                  <AccountBalance className="h-5 w-5 text-primary" />
-                </div>
-                <Typography variant="h6" component="h2" sx={{ fontWeight: 600, color: 'text.primary' }}>
+          <DialogTitle id="fund-detail-dialog-title" sx={{ p: 3, pb: 2 }}>
+            <Stack direction="row" alignItems="center" justifyContent="space-between" spacing={2}>
+              <Stack direction="row" alignItems="center" spacing={2}>
+                <Box sx={{ p: 1, borderRadius: '0.5rem', display: 'flex' }}>
+                  <AccountBalance sx={{ width: 20, height: 20, color: 'primary.main' }} />
+                </Box>
+                <Typography variant="h6" sx={{ fontWeight: 600, color: 'text.primary' }}>
                   {selectedFund?.name} 详情
                 </Typography>
-                <Badge variant="standard" color="primary" sx={{ fontSize: '0.75rem', border: '1px solid', borderColor: 'primary.main', backgroundColor: 'background.paper', color: 'primary.main', '& .MuiBadge-badge': { border: '1px solid', borderColor: 'primary.main', backgroundColor: 'background.paper', color: 'primary.main' } }}>
+                <Badge variant="standard" color="primary" sx={{ fontSize: '0.75rem', border: '1px solid', borderColor: 'primary.main', backgroundColor: 'background.paper', color: 'primary.main', borderRadius: 1, px: 0.5, height: '16px', lineHeight: '16px', '& .MuiBadge-badge': { border: '1px solid', borderColor: 'primary.main', backgroundColor: 'background.paper', color: 'primary.main' } }}>
                   {selectedFund?.code}
                 </Badge>
-              </div>
+              </Stack>
               <IconButton
                 edge="end"
-                color="inherit"
                 onClick={handleCloseDetail}
                 aria-label="close"
                 sx={{ color: 'text.secondary' }}
               >
-                <Close className="h-5 w-5" />
+                <Close sx={{ width: 20, height: 20 }} />
               </IconButton>
-            </div>
-            <div className="p-6">
-              {selectedFund && (
-                <Chart fundCode={selectedFund.code} fundName={selectedFund.name} />
-              )}
-            </div>
-          </Box>
-        </Modal>
+            </Stack>
+          </DialogTitle>
+          <DialogContent id="fund-detail-dialog-description" sx={{ p: 3, pt: 0 }}>
+            {selectedFund && (
+              <Chart fundCode={selectedFund.code} fundName={selectedFund.name} />
+            )}
+          </DialogContent>
+        </Dialog>
         <SettingDialog
           isSettingsOpen={isSettingsOpen}
           setIsSettingsOpen={setIsSettingsOpen}
@@ -215,23 +206,18 @@ const FundPage = () => {
         <SecondaryCard isAutoRefreshEnabled={isAutoRefreshEnabled} lastUpdate={lastUpdate} length={funds.length} />
         <ErrorAlert error={error} />
 
-        <div className="mb-8">
-          <div className="flex justify-between items-center mb-4">
+        <Box sx={{ mb: 8 }}>
+          <Stack direction="row" justifyContent="space-between" alignItems="center" spacing={2} sx={{ mb: 4 }}>
             <Typography variant="h6" component="h2" sx={{ fontWeight: 600, color: 'text.primary' }}>
               我的基金
             </Typography>
-            {!!funds.length && (
-              <Typography variant="body2" sx={{ color: 'info.main' }}>
-                点击卡片查看详情
-              </Typography>
-            )}
-          </div>
-          <FundList
-            funds={funds}
-            onRemoveFund={removeFund}
-            onFundClick={handleFundClick}
-          />
-        </div>
+            <Typography variant="body2" sx={{ color: 'text.secondary' }}>
+              点击卡片查看详情
+            </Typography>
+          </Stack>
+          <FundList funds={funds} onRemoveFund={removeFund} onFundClick={handleFundClick} />
+        </Box>
+
       </Container>
     </BodyCom>
   );

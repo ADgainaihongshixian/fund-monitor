@@ -18,6 +18,9 @@ const FundCard = ({ fund, onRemove, onClick }: FundCardProps) => {
           boxShadow: '0 8px 30px rgba(0,0,0,0.12)',
           borderColor: 'primary.light',
           transform: 'translateY(-2px)',
+          '& .fund-card-hover-mask': {
+            opacity: 1,
+          },
         },
         position: 'relative',
         overflow: 'hidden',
@@ -114,6 +117,7 @@ const FundCard = ({ fund, onRemove, onClick }: FundCardProps) => {
 
       {/* 悬停时的渐变效果 */}
       <Box
+        className="fund-card-hover-mask"
         sx={{
           position: 'absolute',
           inset: 0,
