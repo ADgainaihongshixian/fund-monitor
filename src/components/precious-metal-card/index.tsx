@@ -1,6 +1,7 @@
 import { usePreciousMetalData } from '@/hooks/usePreciousMetalData';
 import { PreciousMetalCardProps } from '@/types/preciousMetal';
 import { calculateCnyPrice } from '@/utils/calculateCnyPrice';
+import { GOLD_COLOR } from '@/constant/enum';
 import {
   TrendingUp,
   TrendingDown,
@@ -43,7 +44,7 @@ const PreciousMetalCard = ({ metal }: PreciousMetalCardProps) => {
         transition: 'all 0.3s ease',
         '&:hover': {
           boxShadow: '0 8px 30px rgba(0,0,0,0.12)',
-          borderColor: 'primary.light',
+          borderColor: GOLD_COLOR,
           transform: 'translateY(-2px)',
           '& .hover-mask': {
             opacity: 1,
