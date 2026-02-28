@@ -10,10 +10,9 @@ import {
 
 interface PreciousMetalListProps {
   metals: PreciousMetalData[];
-  rate: number;
 };
 
-const PreciousMetalList = ({ metals, rate }: PreciousMetalListProps) => {
+const PreciousMetalList = ({ metals }: PreciousMetalListProps) => {
   return (
     !!metals.length ?
       <Grid container spacing={3}>

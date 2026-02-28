@@ -1,15 +1,10 @@
-import axios from 'axios';
 import { ApiResponse } from '@/types';
+import { EXCHANGE_RATE_BASE_URL } from '@/constant/api';
+import { createApiClient } from '@/utils/apiClient';
+import { requestInterceptor } from '@/utils/requestInterceptor';
 
-const BASE_URL = '/api/sina-exchange';
-
-const apiClient = axios.create({
-  baseURL: BASE_URL,
-  timeout: 15000,
-  headers: {
-    'Accept': '*/*',
-  },
-});
+const apiClient = createApiClient({ baseURL: EXCHANGE_RATE_BASE_URL, accept: '*/*' });
+requestInterceptor(apiClient);
 
 const handleApiError = (error: any): string => {
   if (error.response) {
@@ -88,7 +83,7 @@ const exchangeRateApi = {
         responseType: 'text',
       });
 
-      const rateData = parseExchangeRateData(response.data);
+      const rateData = parseExchangeRateData(response as unknown as string);
 
       if (!rateData) {
         return {

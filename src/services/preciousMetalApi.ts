@@ -1,16 +1,11 @@
-import axios from 'axios';
 import { PreciousMetalData, ApiResponse, PRECIOUS_METALS, PreciousMetalConfig } from '@/types';
 import { SINA_METAL_CODES } from '@/constant/enum';
+import { PRECIOUS_METAL_BASE_URL } from '@/constant/api';
+import { createApiClient } from '@/utils/apiClient';
+import { requestInterceptor } from '@/utils/requestInterceptor';
 
-const BASE_URL = '/api/sina-metal';
-
-const apiClient = axios.create({
-  baseURL: BASE_URL,
-  timeout: 15000,
-  headers: {
-    'Accept': '*/*',
-  },
-});
+const apiClient = createApiClient({ baseURL: PRECIOUS_METAL_BASE_URL, accept: '*/*' });
+requestInterceptor(apiClient);
 
 const handleApiError = (error: any): string => {
   if (error.response) {
@@ -127,7 +122,7 @@ const preciousMetalApi = {
       }
 
       const sinaCodes = validSymbols.map(s => SINA_METAL_CODES[s]).join(',');
-      const response = await apiClient.get(`/list=${sinaCodes}`, {
+      const response = await apiClient.get<string>(`/list=${sinaCodes}`, {
         responseType: 'text',
       });
 
@@ -137,7 +132,7 @@ const preciousMetalApi = {
         const config = PRECIOUS_METALS.find(m => m.symbol === symbol);
         if (!config) continue;
 
-        const metalData = parseSinaMetalData(response.data, symbol, config);
+        const metalData = parseSinaMetalData(response as unknown as string, symbol, config);
         if (metalData) {
           results.push(metalData);
         }

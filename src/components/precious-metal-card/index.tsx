@@ -168,14 +168,14 @@ const PreciousMetalCard = ({ metal }: PreciousMetalCardProps) => {
                     <Typography variant="body2" sx={{ fontWeight: 500, color: 'text.primary', display: 'flex', alignItems: 'end' }}>
                       {value}
                       {!!exchangeRate?.rate && <>
-                        <Typography variant="body2" sx={{ color: 'text.secondary', fontSize: 12, fontWeight: 500 }}>
+                        <Typography component="span" variant="body2" sx={{ color: 'text.secondary', fontSize: 12, fontWeight: 500 }}>
                           （
                         </Typography>
                         <CurrencyYuan sx={{ fontSize: 12, color: 'text.secondary', marginBottom: '3px' }} />
-                        <Typography variant="body2" sx={{ color: 'text.secondary', fontSize: 12, fontWeight: 500 }}>
+                        <Typography component="span" variant="body2" sx={{ color: 'text.secondary', fontSize: 12, fontWeight: 500 }}>
                           {calculateCnyPrice(exchangeRate.rate, +value)}
                         </Typography>
-                        <Typography variant="body2" sx={{ color: 'text.secondary', fontSize: 12, fontWeight: 500 }}>
+                        <Typography component="span" variant="body2" sx={{ color: 'text.secondary', fontSize: 12, fontWeight: 500 }}>
                           ）
                         </Typography>
                       </>}

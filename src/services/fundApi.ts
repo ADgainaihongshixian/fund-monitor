@@ -1,14 +1,8 @@
-import axios from 'axios';
 import { FundData, FundSearchResult, ApiResponse, EastmoneyHistoryResponse } from '@/types';
-
-// API基础URL - 使用Vite代理
-const BASE_URL = '/api/fundgz';
-
-// 基金搜索API基础URL - 使用Vite代理
-const SEARCH_BASE_URL = '/api/eastmoney';
-
-// 基金历史数据API基础URL - 使用Vite代理
-const HISTORY_BASE_URL = '/api/fund';
+import { FUND_BASE_URL, FUND_BASE_SEARCH_URL, FUND_BASE_HISTORY_URL } from '@/constant/api';
+import { FUND_HISTORY_CACHE_EXPIRY_TIME } from '@/constant/enum';
+import { createApiClient } from '@/utils/apiClient';
+import { requestInterceptor } from '@/utils/requestInterceptor';
 
 // 历史数据缓存
 const historyDataCache: {
@@ -17,9 +11,6 @@ const historyDataCache: {
     timestamp: number;
   };
 } = {};
-
-// 缓存过期时间（毫秒）
-const CACHE_EXPIRY_TIME = 5 * 60 * 1000; // 5分钟
 
 // 解析JSONP响应
 const parseJSONP = (response: any): any => {
@@ -41,32 +32,9 @@ const parseJSONP = (response: any): any => {
 };
 
 // 创建多个axios实例，分别用于不同的API服务
-const apiClient = axios.create({
-  baseURL: BASE_URL,
-  timeout: 15000,
-  headers: {
-    'Content-Type': 'text/plain',
-    'Accept': '*/*',
-  },
-});
-
-// 创建搜索API实例
-const searchApiClient = axios.create({
-  baseURL: SEARCH_BASE_URL,
-  timeout: 10000,
-  headers: {
-    'Content-Type': 'application/json',
-  },
-});
-
-// 创建历史数据API实例
-const historyApiClient = axios.create({
-  baseURL: HISTORY_BASE_URL,
-  timeout: 10000,
-  headers: {
-    'Content-Type': 'application/json',
-  },
-});
+const apiClient = createApiClient({ baseURL: FUND_BASE_URL, contentType: 'text/plain', accept: '*/*' });
+const searchApiClient = createApiClient({ baseURL: FUND_BASE_SEARCH_URL, contentType: 'application/json' });
+const historyApiClient = createApiClient({ baseURL: FUND_BASE_HISTORY_URL, contentType: 'application/json' });
 
 // 错误处理函数
 const handleApiError = (error: any): string => {
@@ -107,32 +75,10 @@ const handleApiError = (error: any): string => {
   }
 };
 
-// 通用请求拦截器
-const setupInterceptors = (client: any) => {
-  client.interceptors.request.use(
-    (config: any) => {
-      // 可以在这里添加认证信息等
-      return config;
-    },
-    (error: any) => {
-      return Promise.reject(error);
-    }
-  );
-
-  client.interceptors.response.use(
-    (response: any) => {
-      return response.data;
-    },
-    (error: any) => {
-      return Promise.reject(error);
-    }
-  );
-};
-
-// 设置拦截器
-setupInterceptors(apiClient);
-setupInterceptors(searchApiClient);
-setupInterceptors(historyApiClient);
+// 请求拦截器
+requestInterceptor(apiClient);
+requestInterceptor(searchApiClient);
+requestInterceptor(historyApiClient);
 
 // API服务
 const fundApi = {
@@ -312,7 +258,7 @@ const fundApi = {
 
       // 检查缓存是否有效
       const now = Date.now();
-      if (historyDataCache[cacheKey] && now - historyDataCache[cacheKey].timestamp < CACHE_EXPIRY_TIME) {
+      if (historyDataCache[cacheKey] && now - historyDataCache[cacheKey].timestamp < FUND_HISTORY_CACHE_EXPIRY_TIME) {
         return {
           success: true,
           data: historyDataCache[cacheKey].data,

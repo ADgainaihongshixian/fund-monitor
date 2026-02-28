@@ -11,3 +11,6 @@ export const SINA_METAL_CODES: Record<string, string> = {
     XPD: 'hf_XPD',
 };
 
+// 缓存过期时间（毫秒）
+export const FUND_HISTORY_CACHE_EXPIRY_TIME = 5 * 60 * 1000; // 5分钟
+
