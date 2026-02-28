@@ -1,4 +1,5 @@
-import { ApiResponse } from '@/types';
+import { ApiResponse } from '@/types/index';
+import { ExchangeRateData } from '@/types/exchangeRate';
 import { EXCHANGE_RATE_BASE_URL } from '@/constant/api';
 import { createApiClient } from '@/utils/apiClient';
 import { requestInterceptor } from '@/utils/requestInterceptor';
@@ -6,11 +7,6 @@ import { handleApiError } from '@/utils/handleApiError';
 
 const apiClient = createApiClient({ baseURL: EXCHANGE_RATE_BASE_URL, accept: '*/*' });
 requestInterceptor(apiClient);
-
-export interface ExchangeRateData {
-  rate: number;
-  lastUpdate: string;
-}
 
 const parseExchangeRateData = (responseText: string): ExchangeRateData | null => {
   try {

@@ -2,7 +2,6 @@ export interface AddFundProps {
     isOpen: boolean;
     onClose: () => void;
     onAddFund: (code: string) => Promise<void>;
-    searchFunds: (keyword: string) => Promise<FundSearchResult[]>;
 };
 
 export interface ChartProps {
@@ -47,4 +46,5 @@ export interface SearchFundProps {
     onSearch: (keyword: string) => Promise<FundSearchResult[]>;
     onSelect: (fund: FundSearchResult) => void;
     isLoading?: boolean;
+    totalFunds?: number;
 };

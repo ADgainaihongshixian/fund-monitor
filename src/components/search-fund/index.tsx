@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { FundSearchResult, SearchFundProps } from '@/types/fund';
 import { Search } from '@mui/icons-material';
 import {
@@ -14,31 +14,40 @@ import {
   Box
 } from '@mui/material';
 
-const SearchFund = ({ onSearch, onSelect }: SearchFundProps) => {
+const SearchFund = ({ onSearch, onSelect, totalFunds }: SearchFundProps) => {
   const [keyword, setKeyword] = useState('');
   const [results, setResults] = useState<FundSearchResult[]>([]);
   const [showResults, setShowResults] = useState(false);
   const [searchLoading, setSearchLoading] = useState(false);
 
-  // 防抖搜索
+  const onSearchRef = useRef(onSearch);
+  const searchRequestIdRef = useRef(0);
+
   useEffect(() => {
-    const debounceTimer = setTimeout(async () => {
-      if (keyword.trim()) {
-        setSearchLoading(true);
-        const searchResults = await onSearch(keyword);
-        setResults(searchResults);
-        setShowResults(true);
-        setSearchLoading(false);
-      } else {
-        setResults([]);
-        setShowResults(false);
-      }
-    }, 300);
+    onSearchRef.current = onSearch;
+  }, [onSearch]);
 
-    return () => clearTimeout(debounceTimer);
-  }, [keyword, onSearch]);
+  useEffect(() => {
+    if (!keyword.trim()) {
+      setResults([]);
+      setShowResults(false);
+      return;
+    }
 
-  // 处理选择基金
+    const requestId = ++searchRequestIdRef.current;
+    const isCurrentRequest = () => requestId === searchRequestIdRef.current;
+
+    const timer = setTimeout(() => {
+      setSearchLoading(true);
+      onSearchRef.current(keyword)
+        .then(data => isCurrentRequest() && (setResults(data), setShowResults(true)))
+        .catch(() => isCurrentRequest() && (setResults([]), setShowResults(false)))
+        .finally(() => isCurrentRequest() && setSearchLoading(false));
+    }, 150);
+
+    return () => clearTimeout(timer);
+  }, [keyword]);
+
   const handleSelect = useCallback((fund: FundSearchResult) => {
     onSelect(fund);
     setKeyword('');
@@ -46,7 +55,6 @@ const SearchFund = ({ onSearch, onSelect }: SearchFundProps) => {
     setShowResults(false);
   }, [onSelect]);
 
-  // 处理点击外部关闭结果
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       const target = event.target as HTMLElement;
@@ -59,12 +67,25 @@ const SearchFund = ({ onSearch, onSelect }: SearchFundProps) => {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
+  const highlightText = (text: string, keyword: string) => {
+    if (!keyword.trim()) return text;
+    const regex = new RegExp(`(${keyword.trim()})`, 'gi');
+    const parts = text.split(regex);
+
+    return parts.map((part, index) =>
+      regex.test(part) ?
+        <Box key={index} component="span" sx={{ color: 'primary.main', fontWeight: 600 }}>{part}</Box>
+        :
+        part
+    );
+  };
+
   return (
-    <div className="search-container w-full relative">
+    <Box className="search-container" sx={{ width: '100%', position: 'relative' }}>
       <TextField
         fullWidth
         variant="outlined"
-        placeholder="输入基金代码或名称搜索"
+        placeholder={totalFunds ? `在 ${totalFunds.toLocaleString()} 只基金中搜索...` : "输入基金代码或名称搜索"}
         value={keyword}
         onChange={(e) => setKeyword(e.target.value)}
         onFocus={() => keyword.trim() && setShowResults(true)}
@@ -98,7 +119,7 @@ const SearchFund = ({ onSearch, onSelect }: SearchFundProps) => {
             position: 'absolute',
             zIndex: 10,
             width: '100%',
-            mt: 2.5,
+            mt: 2,
             borderRadius: '0.75rem',
             maxHeight: '300px',
             overflowY: 'auto',
@@ -106,8 +127,13 @@ const SearchFund = ({ onSearch, onSelect }: SearchFundProps) => {
             animation: 'fadeIn 0.3s ease-in-out'
           }}
         >
+          <Box sx={{ px: 2.5, py: 1, bgcolor: 'action.hover', borderBottom: '1px solid', borderColor: 'divider' }}>
+            <Typography variant="caption" sx={{ color: 'text.secondary' }}>
+              找到 {results.length} 只相关基金
+            </Typography>
+          </Box>
           <List sx={{ p: 0 }}>
-            {results.map((fund, index) => (
+            {results.slice(0, 50).map((fund, index) => (
               <ListItem
                 key={fund.code}
                 component="div"
@@ -120,7 +146,7 @@ const SearchFund = ({ onSearch, onSelect }: SearchFundProps) => {
                   },
                   transition: 'all 0.2s ease',
                   cursor: 'pointer',
-                  animationDelay: `${index * 0.05}s`
+                  animationDelay: `${index * 0.02}s`
                 }}
                 onClick={() => handleSelect(fund)}
               >
@@ -129,13 +155,13 @@ const SearchFund = ({ onSearch, onSelect }: SearchFundProps) => {
                     <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%' }}>
                       <Box sx={{ flex: 1, minWidth: 0 }}>
                         <Typography variant="body1" sx={{ fontWeight: 500, color: 'text.primary', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                          {fund.name}
+                          {highlightText(fund.name, keyword)}
                         </Typography>
                         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mt: 0.5 }}>
-                          <Badge variant="standard" color="info" sx={{ fontSize: '0.75rem', border: '1px solid', borderColor: 'info.main', backgroundColor: 'background.paper', color: 'info.main', '& .MuiBadge-badge': { border: '1px solid', borderColor: 'info.main', backgroundColor: 'background.paper', color: 'info.main' } }}>
+                          <Badge variant="standard" color="info" sx={{ fontSize: '0.75rem', border: '1px solid', borderColor: 'info.main', backgroundColor: 'background.paper', color: 'info.main', borderRadius: 1, height: '16px', lineHeight: '16px', px: 0.5, '& .MuiBadge-badge': { border: '1px solid', borderColor: 'info.main', backgroundColor: 'background.paper', color: 'info.main' } }}>
                             {fund.code}
                           </Badge>
-                          <Typography variant="caption" sx={{ color: 'info.main' }}>
+                          <Typography variant="caption" sx={{ color: 'info.main', lineHeight: '16px' }}>
                             {fund.type}
                           </Typography>
                         </Box>
@@ -162,6 +188,13 @@ const SearchFund = ({ onSearch, onSelect }: SearchFundProps) => {
                 />
               </ListItem>
             ))}
+            {results.length > 50 && (
+              <Box sx={{ px: 2.5, py: 1.5, textAlign: 'center', bgcolor: 'action.hover' }}>
+                <Typography variant="caption" sx={{ color: 'text.secondary' }}>
+                  还有 {results.length - 50} 只基金未显示，请输入更精确的关键词
+                </Typography>
+              </Box>
+            )}
           </List>
         </Paper>
       )}
@@ -173,7 +206,7 @@ const SearchFund = ({ onSearch, onSelect }: SearchFundProps) => {
             position: 'absolute',
             zIndex: 10,
             width: '100%',
-            mt: 1,
+            mt: 2,
             borderRadius: '0.75rem',
             p: 3,
             textAlign: 'center',
@@ -182,7 +215,7 @@ const SearchFund = ({ onSearch, onSelect }: SearchFundProps) => {
         >
           <Box sx={{ display: 'flex', justifyContent: 'center', mb: 2 }}>
             <Box sx={{ bgcolor: 'action.hover', p: 1.5, borderRadius: '50%', width: 48, height: 48, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <Search className="h-6 w-6 text-info" />
+              <Search sx={{ width: 24, height: 24, color: 'info.main' }} />
             </Box>
           </Box>
           <Typography variant="subtitle2" sx={{ fontWeight: 500, color: 'info.main', mb: 0.5 }}>
@@ -193,7 +226,7 @@ const SearchFund = ({ onSearch, onSelect }: SearchFundProps) => {
           </Typography>
         </Paper>
       )}
-    </div>
+    </Box>
   );
 };
 

@@ -6,6 +6,59 @@ import { createApiClient } from '@/utils/apiClient';
 import { requestInterceptor } from '@/utils/requestInterceptor';
 import { handleApiError } from '@/utils/handleApiError';
 
+const FUND_LIST_CACHE_KEY = 'fund_list_cache';
+const FUND_LIST_CACHE_EXPIRY_TIME = 24 * 60 * 60 * 1000; // 24小时
+
+interface FundListCache {
+  data: FundSearchResult[];
+  timestamp: number;
+}
+
+const getFundListCache = (): FundListCache | null => {
+  try {
+    const cached = localStorage.getItem(FUND_LIST_CACHE_KEY);
+    if (cached) {
+      const parsed = JSON.parse(cached);
+      if (parsed && Array.isArray(parsed.data) && typeof parsed.timestamp === 'number') {
+        return parsed;
+      }
+    }
+  } catch (e) {
+    // 缓存数据损坏，清除缓存
+    localStorage.removeItem(FUND_LIST_CACHE_KEY);
+  }
+  return null;
+};
+
+const setFundListCache = (data: FundSearchResult[]): void => {
+  try {
+    const cache: FundListCache = {
+      data,
+      timestamp: Date.now()
+    };
+    localStorage.setItem(FUND_LIST_CACHE_KEY, JSON.stringify(cache));
+  } catch (e) {
+    // localStorage 写入失败（可能已满），清除旧缓存后重试
+    try {
+      localStorage.removeItem(FUND_LIST_CACHE_KEY);
+      const cache: FundListCache = {
+        data,
+        timestamp: Date.now()
+      };
+      localStorage.setItem(FUND_LIST_CACHE_KEY, JSON.stringify(cache));
+    } catch (e2) {
+      // 仍然失败，忽略
+    }
+  }
+};
+
+const isCacheValid = (cache: FundListCache | null): boolean => {
+  if (!cache || !cache.data || cache.data.length === 0) {
+    return false;
+  }
+  return (Date.now() - cache.timestamp) < FUND_LIST_CACHE_EXPIRY_TIME;
+};
+
 // 历史数据缓存
 const historyDataCache: {
   [key: string]: {
@@ -59,13 +112,9 @@ const fundApi = {
       // 并行请求多个基金数据
       const fundPromises = codes.map(async (code) => {
         try {
-          // 构建天天基金网API请求URL
           const url = `/js/${code}.js`;
-
-          // 发送请求
           const response = await apiClient.get(url, { responseType: 'text' as const });
 
-          // 检查响应数据
           if (!response || typeof response !== 'string') {
             throw new Error(`Empty or invalid response: data=${response}`);
           }
@@ -134,25 +183,27 @@ const fundApi = {
     }
   },
 
-  // 搜索基金
-  searchFund: async (keyword: string): Promise<ApiResponse<FundSearchResult[]>> => {
+  // 获取全量基金列表（带缓存）
+  getAllFunds: async (): Promise<ApiResponse<FundSearchResult[]>> => {
     try {
-      if (!keyword || keyword.trim() === '') {
+      // 检查缓存
+      const cache = getFundListCache();
+      if (isCacheValid(cache)) {
         return {
           success: true,
-          data: [],
-          message: '搜索关键词为空',
+          data: cache!.data,
+          message: '获取基金列表成功（从缓存）',
         };
       }
 
-      // 使用天天基金网的基金代码搜索API获取真实数据
-      // 这个API返回所有基金的代码和名称列表
+      // 从API获取数据
       const url = '/js/fundcode_search.js';
+      const now = Date.now();
+      const response = await searchApiClient.get(url, {
+        responseType: 'text',
+        params: { _: now }
+      });
 
-      // 发送请求
-      const response = await searchApiClient.get(url, { responseType: 'text' });
-
-      // 解析响应数据
       const responseData = response as unknown as string;
       const allFunds: FundSearchResult[] = [];
 
@@ -167,28 +218,92 @@ const fundApi = {
           // 遍历基金数据数组
           fundDataArray.forEach((fundItem: any[]) => {
             if (fundItem.length >= 4) {
-              const code = fundItem[0];
-              const name = fundItem[2];
-              const type = fundItem[3];
-
-              // 构建基金搜索结果对象
-              const fundSearchResult: FundSearchResult = {
-                code,
-                name,
-                type,
-              };
-
-              allFunds.push(fundSearchResult);
+              allFunds.push({
+                code: fundItem[0],
+                name: fundItem[2],
+                type: fundItem[3],
+              });
             }
           });
+
+          // 保存到缓存
+          setFundListCache(allFunds);
+
+          return {
+            success: true,
+            data: allFunds,
+            message: '获取基金列表成功',
+          };
         } catch (parseError) {
+          return {
+            success: false,
+            data: [],
+            message: '解析基金数据失败',
+          };
         }
       }
 
-      // 过滤基金列表，只返回包含关键词的结果
-      const filteredResults = allFunds.filter(
-        fund => fund.code.includes(keyword.trim()) || fund.name.includes(keyword.trim())
-      );
+      return {
+        success: false,
+        data: [],
+        message: '获取基金列表失败：数据格式错误',
+      };
+    } catch (error) {
+      // 如果有旧缓存，降级使用
+      const cache = getFundListCache();
+      if (cache && cache.data.length > 0) {
+        return {
+          success: true,
+          data: cache.data,
+          message: '获取基金列表成功（使用旧缓存）',
+        };
+      }
+
+      return {
+        success: false,
+        data: [],
+        message: handleApiError(error),
+      };
+    }
+  },
+
+  // 本地搜索基金（基于缓存数据）
+  searchFundsLocal: (keyword: string, allFunds: FundSearchResult[]): FundSearchResult[] => {
+    if (!keyword || !keyword.trim()) {
+      return [];
+    }
+
+    const keywordLower = keyword.trim().toLowerCase();
+    return allFunds.filter(
+      fund => fund.code.toLowerCase().includes(keywordLower) ||
+              fund.name.toLowerCase().includes(keywordLower)
+    );
+  },
+
+  // 搜索基金（保留原有接口兼容性）
+  searchFund: async (keyword: string): Promise<ApiResponse<FundSearchResult[]>> => {
+    try {
+      if (!keyword || keyword.trim() === '') {
+        return {
+          success: true,
+          data: [],
+          message: '搜索关键词为空',
+        };
+      }
+
+      // 获取全量数据（会使用缓存）
+      const allFundsResponse = await fundApi.getAllFunds();
+      
+      if (!allFundsResponse.success || !allFundsResponse.data.length) {
+        return {
+          success: false,
+          data: [],
+          message: allFundsResponse.message || '获取基金数据失败',
+        };
+      }
+
+      // 本地筛选
+      const filteredResults = fundApi.searchFundsLocal(keyword, allFundsResponse.data);
 
       return {
         success: true,
@@ -202,6 +317,11 @@ const fundApi = {
         message: handleApiError(error),
       };
     }
+  },
+
+  // 清除基金列表缓存
+  clearFundListCache: (): void => {
+    localStorage.removeItem(FUND_LIST_CACHE_KEY);
   },
 
   // 获取基金历史数据
@@ -231,8 +351,6 @@ const fundApi = {
 
       // 构建东方财富网历史净值API请求URL
       const url = `/f10/lsjz`;
-
-      // 发送请求
       const response = await historyApiClient.get<EastmoneyHistoryResponse>(url, {
         params: {
           fundCode: code.trim(),
@@ -244,7 +362,6 @@ const fundApi = {
         }
       });
 
-      // 解析响应数据
       const historyData: { date: string; value: number; change: number }[] = [];
 
       if (response) {

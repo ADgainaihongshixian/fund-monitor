@@ -1,24 +1,8 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import preciousMetalApi from '@/services/preciousMetalApi';
-import exchangeRateApi, { ExchangeRateData } from '@/services/exchangeRateApi';
-import { PreciousMetalData } from '@/types';
-
-interface PreciousMetalStore {
-  metals: PreciousMetalData[];
-  isLoading: boolean;
-  lastUpdate: string;
-  error: string | null;
-  autoRefresh: boolean;
-  refreshInterval: number;
-  exchangeRate: ExchangeRateData | null;
-  exchangeRateError: string | null;
-
-  refreshMetals: () => Promise<void>;
-  setAutoRefresh: (enabled: boolean) => void;
-  setRefreshInterval: (interval: number) => void;
-  clearError: () => void;
-}
+import exchangeRateApi from '@/services/exchangeRateApi';
+import { PreciousMetalStore } from '@/types/store';
 
 export const usePreciousMetalStore = create<PreciousMetalStore>()(
   persist(

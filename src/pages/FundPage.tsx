@@ -30,7 +30,7 @@ import {
 } from '@mui/material';
 
 const FundPage = () => {
-  const { funds, isLoading, lastUpdate, error, refreshFunds, removeFund, addFund, searchFunds } = useFundData();
+  const { funds, isLoading, lastUpdate, error, refreshFunds, removeFund, addFund } = useFundData();
   const { isAutoRefreshEnabled } = useAutoRefresh();
   const { autoRefresh, refreshInterval, setAutoRefresh, setRefreshInterval } = useFundStore();
   const [isAddFundOpen, setIsAddFundOpen] = useState(false);
@@ -64,7 +64,6 @@ const FundPage = () => {
           isOpen={isAddFundOpen}
           onClose={() => setIsAddFundOpen(false)}
           onAddFund={handleAddFund}
-          searchFunds={searchFunds}
         />
         <Modal
           open={!!selectedFund}

@@ -1,46 +1,27 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import fundApi from '@/services/fundApi';
-import { FundData, FundSearchResult } from '@/types/fund';
+import { FundSearchResult } from '@/types/fund';
+import { FundStore } from "@/types/store";
 import { generateCacheKey, fundDataCache } from '@/utils/cache';
 
-// 状态接口
-interface FundStore {
-  // 状态
-  funds: FundData[];
-  isLoading: boolean;
-  lastUpdate: string;
-  error: string | null;
-  autoRefresh: boolean;
-  refreshInterval: number;
-
-  // 操作
-  addFund: (code: string) => Promise<void>;
-  removeFund: (code: string) => void;
-  refreshFunds: (forceRefresh?: boolean) => Promise<void>;
-  searchFunds: (keyword: string) => Promise<FundSearchResult[]>;
-  setAutoRefresh: (enabled: boolean) => void;
-  setRefreshInterval: (interval: number) => void;
-  clearError: () => void;
-}
-
-// 创建store
 export const useFundStore = create<FundStore>()(
   persist(
     (set, get) => ({
-      // 初始状态
       funds: [],
       isLoading: false,
       lastUpdate: '',
       error: null,
       autoRefresh: true,
-      refreshInterval: 60000, // 默认1分钟
+      refreshInterval: 60000,
 
-      // 添加基金
+      allFunds: [],
+      allFundsLoading: false,
+      allFundsError: null,
+
       addFund: async (code: string) => {
         const { funds } = get();
 
-        // 检查是否已存在
         if (funds.some(fund => fund.code === code)) {
           set({ error: '该基金已添加' });
           return;
@@ -49,7 +30,6 @@ export const useFundStore = create<FundStore>()(
         set({ isLoading: true, error: null });
 
         try {
-          // 获取基金数据
           const response = await fundApi.getFundData([code]);
 
           if (response.success && response.data.length > 0) {
@@ -67,7 +47,6 @@ export const useFundStore = create<FundStore>()(
         }
       },
 
-      // 删除基金
       removeFund: (code: string) => {
         const { funds } = get();
         set({
@@ -75,7 +54,6 @@ export const useFundStore = create<FundStore>()(
         });
       },
 
-      // 刷新基金数据
       refreshFunds: async (forceRefresh = false) => {
         const { funds } = get();
 
@@ -85,12 +63,9 @@ export const useFundStore = create<FundStore>()(
 
         try {
           const codes = funds.map(fund => fund.code);
-
-          // 检查缓存
           const cacheKey = generateCacheKey('funds', codes);
           const cachedData = fundDataCache.get(cacheKey);
 
-          // 使用缓存数据（如果存在且未强制刷新）
           if (cachedData && !forceRefresh) {
             set({
               funds: cachedData,
@@ -100,11 +75,9 @@ export const useFundStore = create<FundStore>()(
             return;
           }
 
-          // 获取数据
           const response = await fundApi.getFundData(codes);
 
           if (response.success) {
-            // 更新缓存
             fundDataCache.set(cacheKey, response.data);
 
             set({
@@ -120,7 +93,58 @@ export const useFundStore = create<FundStore>()(
         }
       },
 
-      // 搜索基金
+      // 预加载全量基金数据
+      preloadAllFunds: async (): Promise<boolean> => {
+        const { allFunds } = get();
+
+        // 如果已有数据，不重复加载
+        if (allFunds.length > 0) {
+          return true;
+        }
+
+        set({ allFundsLoading: true, allFundsError: null });
+
+        try {
+          const response = await fundApi.getAllFunds();
+
+          if (response.success && response.data.length > 0) {
+            set({
+              allFunds: response.data,
+              allFundsLoading: false,
+            });
+            return true;
+          } else {
+            set({
+              allFundsLoading: false,
+              allFundsError: response.message || '获取基金列表失败',
+            });
+            return false;
+          }
+        } catch (error) {
+          set({
+            allFundsLoading: false,
+            allFundsError: '网络错误，请稍后重试',
+          });
+          return false;
+        }
+      },
+
+      // 基于本地数据的搜索
+      searchFundsFromLocal: (keyword: string): FundSearchResult[] => {
+        const { allFunds } = get();
+        if (!keyword.trim() || allFunds.length === 0) {
+          return [];
+        }
+        return fundApi.searchFundsLocal(keyword, allFunds);
+      },
+
+      // 清除全量基金缓存
+      clearAllFundsCache: () => {
+        fundApi.clearFundListCache();
+        set({ allFunds: [] });
+      },
+
+      // 搜索基金（兼容原有接口）
       searchFunds: async (keyword: string) => {
         if (!keyword.trim()) {
           return [];
@@ -135,28 +159,25 @@ export const useFundStore = create<FundStore>()(
         }
       },
 
-      // 设置自动刷新
       setAutoRefresh: (enabled: boolean) => {
         set({ autoRefresh: enabled });
       },
 
-      // 设置刷新间隔
       setRefreshInterval: (interval: number) => {
         set({ refreshInterval: interval });
       },
 
-      // 清除错误
       clearError: () => {
         set({ error: null });
       },
     }),
     {
-      name: 'fund-monitor-storage', // 本地存储键名
+      name: 'fund-monitor-storage',
       partialize: (state) => ({
         funds: state.funds,
         autoRefresh: state.autoRefresh,
         refreshInterval: state.refreshInterval,
-      }), // 只持久化这些字段
+      }),
     }
   )
 );

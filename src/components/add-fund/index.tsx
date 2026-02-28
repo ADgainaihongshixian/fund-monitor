@@ -1,29 +1,49 @@
-import { useState } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import SearchFund from '@/components/search-fund';
-import { Add, Close, CheckCircle } from '@mui/icons-material';
+import { Add, Close, CheckCircle, Refresh, Warning } from '@mui/icons-material';
 import { AddFundProps, FundSearchResult } from '@/types/fund';
+import useFundStore from '@/stores/fundStore';
 import {
-  Modal,
+  Dialog,
+  DialogTitle,
+  DialogContent,
   Box,
   Typography,
-  IconButton
+  IconButton,
+  Button,
+  CircularProgress,
+  Stack
 } from '@mui/material';
 
-const AddFund = ({ isOpen, onClose, onAddFund, searchFunds }: AddFundProps) => {
+const AddFund = ({ isOpen, onClose, onAddFund }: AddFundProps) => {
   const [isAdding, setIsAdding] = useState(false);
   const [successMessage, setSuccessMessage] = useState('');
 
-  if (!isOpen) {
-    return null;
-  }
+  const {
+    allFunds,
+    allFundsLoading,
+    allFundsError,
+    preloadAllFunds,
+    searchFundsFromLocal,
+    clearAllFundsCache
+  } = useFundStore();
 
-  // 处理选择基金
+  useEffect(() => {
+    if (isOpen) {
+      preloadAllFunds();
+    }
+  }, [isOpen, preloadAllFunds]);
+
+  const handleRetry = useCallback(() => {
+    clearAllFundsCache();
+    preloadAllFunds();
+  }, [clearAllFundsCache, preloadAllFunds]);
+
   const handleSelectFund = async (fund: FundSearchResult) => {
     setIsAdding(true);
     try {
       await onAddFund(fund.code);
       setSuccessMessage(`成功添加基金: ${fund.name}`);
-      // 3秒后关闭模态框
       setTimeout(() => {
         onClose();
         setSuccessMessage('');
@@ -35,88 +55,121 @@ const AddFund = ({ isOpen, onClose, onAddFund, searchFunds }: AddFundProps) => {
     }
   };
 
+  const handleSearch = useCallback((keyword: string): Promise<FundSearchResult[]> => {
+    return Promise.resolve(searchFundsFromLocal(keyword));
+  }, [searchFundsFromLocal]);
+
+  const handleClose = useCallback(() => {
+    onClose();
+    setSuccessMessage('');
+  }, [onClose]);
+
   return (
-    <Modal
+    <Dialog
       open={isOpen}
-      onClose={() => {
-        onClose();
-        setSuccessMessage('');
-      }}
-      aria-labelledby="add-fund-modal-title"
-      aria-describedby="add-fund-modal-description"
-      sx={{
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        p: { xs: 2, sm: 3 }
+      onClose={handleClose}
+      aria-labelledby="add-fund-dialog-title"
+      aria-describedby="add-fund-dialog-description"
+      maxWidth="sm"
+      fullWidth
+      PaperProps={{
+        sx: {
+          borderRadius: '1rem',
+          maxHeight: '90vh',
+          minHeight: '542px',
+        },
       }}
     >
-      <Box sx={{
-        position: 'relative',
-        bgcolor: 'background.paper',
-        borderRadius: '1rem',
-        boxShadow: 24,
-        width: '480px',
-        maxWidth: { xs: '100%', sm: '90%' },
-        maxHeight: '90vh',
-        minHeight: '542px',
-        display: 'flex',
-        flexDirection: 'column',
-        overflow: 'hidden',
-        animation: 'fadeIn 0.3s ease-in-out'
-      }}>
-        <div className="px-6 py-4 border-b border-divider flex justify-between items-center flex-shrink-0">
-          <div className="flex items-center gap-3">
-            <div className="bg-primary/10 p-2 rounded-lg">
-              <Add className="h-5 w-5 text-primary" />
-            </div>
-            <Typography variant="h6" component="h2" sx={{ fontWeight: 600, color: 'text.primary' }}>
+      <DialogTitle id="add-fund-dialog-title" sx={{ p: 3, pb: 2 }}>
+        <Stack direction="row" alignItems="center" justifyContent="space-between" spacing={2}>
+          <Stack direction="row" alignItems="center" spacing={2}>
+            <Box sx={{ p: 1, borderRadius: '0.5rem', display: 'flex' }}>
+              <Add sx={{ width: 20, height: 20, color: 'primary.main' }} />
+            </Box>
+            <Typography variant="h6" sx={{ fontWeight: 600, color: 'text.primary' }}>
               添加基金
             </Typography>
-          </div>
+          </Stack>
           <IconButton
             edge="end"
-            color="inherit"
-            onClick={() => {
-              onClose();
-              setSuccessMessage('');
-            }}
+            onClick={handleClose}
             aria-label="close"
             sx={{ color: 'text.secondary' }}
           >
-            <Close className="h-5 w-5" />
+            <Close sx={{ width: 20, height: 20 }} />
           </IconButton>
-        </div>
+        </Stack>
+      </DialogTitle>
 
+      <DialogContent id="add-fund-dialog-description" sx={{ p: 3, pt: 0 }}>
         {successMessage ? (
-          <div className="p-6 py-4 flex-shrink-0">
-            <div className="flex flex-col items-center justify-center py-8 text-center animate-bounce-in">
-              <div className="bg-success/10 p-4 rounded-full mb-4">
-                <CheckCircle className="h-12 w-12 text-success" />
-              </div>
-              <Typography variant="subtitle1" sx={{ fontWeight: 500, color: 'success.main' }}>
-                {successMessage}
-              </Typography>
-            </div>
-          </div>
+          <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', py: 4, textAlign: 'center' }}>
+            <Box sx={{ bgcolor: 'success.light', p: 2, borderRadius: '50%', mb: 2 }}>
+              <CheckCircle sx={{ width: 48, height: 48, color: 'success.main' }} />
+            </Box>
+            <Typography variant="subtitle1" sx={{ fontWeight: 500, color: 'success.main' }}>
+              {successMessage}
+            </Typography>
+          </Box>
         ) : (
-          <div className="p-6 py-4 flex-1 flex flex-col min-h-0">
-            <div className="mb-4 flex-shrink-0">
-              <Typography variant="body2" sx={{ color: 'info.main', fontSize: '0.875rem', mb: 0.5 }}>
+          <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: 400 }}>
+            <Box sx={{ mb: 2, flexShrink: 0 }}>
+              <Typography variant="body2" sx={{ color: 'info.main', fontSize: '0.875rem' }}>
                 输入基金代码或名称搜索并添加 (例如: 000001 或 华夏成长混合)
               </Typography>
-            </div>
-            <div className="flex-1 min-h-0 relative">
-              <SearchFund
-                onSearch={searchFunds}
-                onSelect={handleSelectFund}
-                isLoading={isAdding}
-              />
-            </div>
-          </div>
+            </Box>
+
+            {allFundsLoading && (
+              <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
+                <CircularProgress size={40} sx={{ mb: 2 }} />
+                <Typography variant="body2" sx={{ color: 'text.secondary' }}>
+                  正在加载基金数据...
+                </Typography>
+                <Typography variant="caption" sx={{ color: 'text.secondary', mt: 1 }}>
+                  首次加载需要获取全量基金列表，请稍候
+                </Typography>
+              </Box>
+            )}
+
+            {allFundsError && !allFundsLoading && (
+              <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
+                <Box sx={{ bgcolor: 'error.light', p: 2, borderRadius: '50%', mb: 2 }}>
+                  <Warning sx={{ width: 48, height: 48, color: 'error.main' }} />
+                </Box>
+                <Typography variant="subtitle1" sx={{ fontWeight: 500, color: 'error.main', mb: 1 }}>
+                  加载失败
+                </Typography>
+                <Typography variant="body2" sx={{ color: 'text.secondary', mb: 3 }}>
+                  {allFundsError}
+                </Typography>
+                <Button
+                  variant="contained"
+                  startIcon={<Refresh />}
+                  onClick={handleRetry}
+                  sx={{
+                    borderRadius: '0.75rem',
+                    textTransform: 'none',
+                  }}
+                >
+                  重新加载
+                </Button>
+              </Box>
+            )}
+
+            {!allFundsLoading && !allFundsError && !!allFunds.length && (
+              <Box sx={{ flex: 1, minHeight: 0, position: 'relative' }}>
+                <SearchFund
+                  onSearch={handleSearch}
+                  onSelect={handleSelectFund}
+                  isLoading={isAdding}
+                  totalFunds={allFunds.length}
+                />
+              </Box>
+            )}
+          </Box>
         )}
-      </Box>
-    </Modal>
+      </DialogContent>
+    </Dialog>
   );
 };
 
