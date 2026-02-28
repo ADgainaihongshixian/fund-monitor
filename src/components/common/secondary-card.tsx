@@ -1,12 +1,6 @@
 import { CurrencyExchange, Schedule } from "@mui/icons-material";
 import { Box, Card, CardContent, Chip, Stack, Typography } from "@mui/material";
-
-interface SecondaryCardProps {
-    isAutoRefreshEnabled: boolean;
-    lastUpdate: string | null;
-    length?: number;
-    rate?: number | string | null;
-};
+import { SecondaryCardProps } from "@/types/common";
 
 const SecondaryCard = (props: SecondaryCardProps) => {
     const { isAutoRefreshEnabled, lastUpdate, length = 0, rate = 0 } = props;

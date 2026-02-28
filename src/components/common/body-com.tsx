@@ -1,12 +1,7 @@
-import { ReactNode, useMemo, useState } from "react"
+import { useState } from "react"
 import { Box } from "@mui/material"
-import Navbar from "@components/navbar";
-
-interface BodyComProps {
-    children?: ReactNode | string | number | null;
-    otherChildren?: ReactNode | string | number | null;
-    footer?: ReactNode | string | number | null;
-};
+import Navbar from "@/components/common/navbar";
+import { BodyComProps } from "@/types/common";
 
 const BodyCom = (props: BodyComProps) => {
     const { children = null, otherChildren = null, footer = null } = props;

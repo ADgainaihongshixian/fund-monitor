@@ -1,5 +1,6 @@
-import { PreciousMetalData, ApiResponse, PRECIOUS_METALS, PreciousMetalConfig } from '@/types';
-import { SINA_METAL_CODES } from '@/constant/enum';
+import { ApiResponse, PreciousMetalConfig } from '@/types/index';
+import { PreciousMetalData } from '@/types/preciousMetal';
+import { PRECIOUS_METALS, SINA_METAL_CODES } from '@/constant/enum';
 import { PRECIOUS_METAL_BASE_URL } from '@/constant/api';
 import { createApiClient } from '@/utils/apiClient';
 import { requestInterceptor } from '@/utils/requestInterceptor';

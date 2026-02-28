@@ -1,9 +1,5 @@
 import { createContext, useContext, useState, ReactNode } from 'react';
-
-interface NavbarHeightContextType {
-    navbarHeight: number;
-    setNavbarHeight: (height: number) => void;
-}
+import { NavbarHeightContextType } from '@/types/common';
 
 const NavbarHeightContext = createContext<NavbarHeightContextType | undefined>(undefined);
 

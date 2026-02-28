@@ -8,7 +8,7 @@ import SettingDialog from '@/components/common/setting-dialog';
 import BodyCom from '@/components/common/body-com';
 import { useFundData } from '@/hooks/useFundData';
 import { useAutoRefresh } from '@/hooks/useAutoRefresh';
-import { FundData } from '@/types';
+import { FundData } from '@/types/fund';
 import useFundStore from '@/stores/fundStore';
 import {
   AccountBalance,

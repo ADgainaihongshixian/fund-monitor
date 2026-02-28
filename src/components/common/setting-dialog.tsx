@@ -11,22 +11,9 @@ import {
     IconButton,
 } from '@mui/material';
 import Grid from '@mui/material/Unstable_Grid2';
-import {
-    Close,
-    Info,
-    Settings
-} from "@mui/icons-material";
+import { Close, Info, Settings } from "@mui/icons-material";
 import { TIME_INTERVAL_MAP } from '@/constant/enum';
-
-interface SettingDialogProps {
-    isSettingsOpen: boolean;
-    setIsSettingsOpen: (isOpen: boolean) => void;
-    autoRefresh: boolean;
-    handleAutoRefreshToggle: (event: React.ChangeEvent<HTMLInputElement>) => void;
-    refreshInterval: number;
-    handleRefreshIntervalChange: (interval: number) => void;
-    tips?: string;
-};
+import { SettingDialogProps } from '@/types/common';
 
 const SettingDialog = (props: SettingDialogProps) => {
     const { isSettingsOpen, setIsSettingsOpen, autoRefresh, handleAutoRefreshToggle, refreshInterval, handleRefreshIntervalChange, tips = '开启后，系统将自动刷新贵金属行情数据' } = props;

@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import fundApi from '@/services/fundApi';
-import { FundData, FundSearchResult } from '@/types';
+import { FundData, FundSearchResult } from '@/types/fund';
 import { generateCacheKey, fundDataCache } from '@/utils/cache';
 
 // 状态接口

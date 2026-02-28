@@ -1,9 +1,6 @@
 import { Alert, Stack, Typography } from "@mui/material";
 import { ErrorOutline } from "@mui/icons-material";
-
-interface ErrorAlertProps {
-    error: string | null;
-};
+import { ErrorAlertProps } from "@/types/common";
 
 const ErrorAlert = (props: ErrorAlertProps) => {
     const { error } = props;

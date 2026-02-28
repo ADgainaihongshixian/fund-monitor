@@ -1,4 +1,5 @@
-import { FundData, FundSearchResult, ApiResponse, EastmoneyHistoryResponse } from '@/types';
+import { ApiResponse, EastmoneyHistoryResponse } from '@/types';
+import { FundData, FundSearchResult } from '@/types/fund';
 import { FUND_BASE_URL, FUND_BASE_SEARCH_URL, FUND_BASE_HISTORY_URL } from '@/constant/api';
 import { FUND_HISTORY_CACHE_EXPIRY_TIME } from '@/constant/enum';
 import { createApiClient } from '@/utils/apiClient';

@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import SearchFund from '@/components/search-fund';
-import { FundSearchResult } from '@/types';
 import { Add, Close, CheckCircle } from '@mui/icons-material';
+import { AddFundProps, FundSearchResult } from '@/types/fund';
 import {
   Modal,
   Box,
@@ -9,14 +9,7 @@ import {
   IconButton
 } from '@mui/material';
 
-interface AddFundProps {
-  isOpen: boolean;
-  onClose: () => void;
-  onAddFund: (code: string) => Promise<void>;
-  searchFunds: (keyword: string) => Promise<FundSearchResult[]>;
-}
-
-const AddFund: React.FC<AddFundProps> = ({ isOpen, onClose, onAddFund, searchFunds }) => {
+const AddFund = ({ isOpen, onClose, onAddFund, searchFunds }: AddFundProps) => {
   const [isAdding, setIsAdding] = useState(false);
   const [successMessage, setSuccessMessage] = useState('');
 

@@ -1,5 +1,5 @@
 import { usePreciousMetalData } from '@/hooks/usePreciousMetalData';
-import { PreciousMetalData } from '@/types';
+import { PreciousMetalCardProps } from '@/types/preciousMetal';
 import { calculateCnyPrice } from '@/utils/calculateCnyPrice';
 import {
   TrendingUp,
@@ -21,10 +21,6 @@ import {
   Chip,
   Divider,
 } from '@mui/material';
-
-interface PreciousMetalCardProps {
-  metal: PreciousMetalData;
-};
 
 const PreciousMetalCard = ({ metal }: PreciousMetalCardProps) => {
   const { name, nameEn, currentPrice, openPrice, highPrice, lowPrice, prevClosePrice, change, changePercent, lastUpdate, isRising } = metal;

@@ -1,29 +1,9 @@
-import React from 'react';
-import { FundData } from '@/types';
 import { formatNumber, formatPercentage } from '@/utils/formatter';
-import {
-  TrendingUp,
-  TrendingDown,
-  Close,
-  AccessTime,
-  AccountBalance
-} from '@mui/icons-material';
-import {
-  Card,
-  CardContent,
-  IconButton,
-  Badge,
-  Typography,
-  Box
-} from '@mui/material';
+import { FundCardProps } from '@/types/fund';
+import { TrendingUp, TrendingDown, Close, AccessTime, AccountBalance } from '@mui/icons-material';
+import { Card, CardContent, IconButton, Badge, Typography, Box } from '@mui/material';
 
-interface FundCardProps {
-  fund: FundData;
-  onRemove: (code: string) => void;
-  onClick?: (fund: FundData) => void;
-}
-
-const FundCard: React.FC<FundCardProps> = ({ fund, onRemove, onClick }) => {
+const FundCard = ({ fund, onRemove, onClick }: FundCardProps) => {
   const { code, name, estimateValue, estimateChange, isRising } = fund;
 
   return (

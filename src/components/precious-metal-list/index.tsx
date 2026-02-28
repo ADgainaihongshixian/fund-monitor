@@ -1,5 +1,5 @@
-import { PreciousMetalData } from '@/types';
 import PreciousMetalCard from '@/components/precious-metal-card';
+import { PreciousMetalListProps } from '@/types/preciousMetal';
 import { Diamond } from '@mui/icons-material';
 import {
   Box,
@@ -7,10 +7,6 @@ import {
   Typography,
   Paper,
 } from '@mui/material';
-
-interface PreciousMetalListProps {
-  metals: PreciousMetalData[];
-};
 
 const PreciousMetalList = ({ metals }: PreciousMetalListProps) => {
   return (

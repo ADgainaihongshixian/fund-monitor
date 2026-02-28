@@ -1,7 +1,8 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import fundApi from '@/services/fundApi';
 import { formatDate, formatNumber, formatPercentage } from '@/utils/formatter';
+import { ChartProps } from '@/types/fund';
 import { ErrorOutline } from '@mui/icons-material';
 import {
   Card,
@@ -12,12 +13,8 @@ import {
   CircularProgress
 } from '@mui/material';
 
-interface ChartProps {
-  fundCode: string;
-  fundName: string;
-}
 
-const Chart: React.FC<ChartProps> = ({ fundCode, fundName }) => {
+const Chart = ({ fundCode, fundName }: ChartProps) => {
   const [historyData, setHistoryData] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);

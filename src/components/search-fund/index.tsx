@@ -1,5 +1,5 @@
-import React, { useState, useEffect, useCallback } from 'react';
-import { FundSearchResult } from '@/types';
+import { useState, useEffect, useCallback } from 'react';
+import { FundSearchResult, SearchFundProps } from '@/types/fund';
 import { Search } from '@mui/icons-material';
 import {
   TextField,
@@ -14,13 +14,7 @@ import {
   Box
 } from '@mui/material';
 
-interface SearchFundProps {
-  onSearch: (keyword: string) => Promise<FundSearchResult[]>;
-  onSelect: (fund: FundSearchResult) => void;
-  isLoading?: boolean;
-}
-
-const SearchFund: React.FC<SearchFundProps> = ({ onSearch, onSelect }) => {
+const SearchFund = ({ onSearch, onSelect }: SearchFundProps) => {
   const [keyword, setKeyword] = useState('');
   const [results, setResults] = useState<FundSearchResult[]>([]);
   const [showResults, setShowResults] = useState(false);

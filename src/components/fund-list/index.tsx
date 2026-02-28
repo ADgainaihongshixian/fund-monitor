@@ -1,16 +1,9 @@
-import React from 'react';
 import FundCard from '@/components/fund-card';
-import { FundData } from '@/types';
 import { AccountBalance, CheckCircle, Search } from '@mui/icons-material';
 import { Box, Typography, Grid, Paper } from '@mui/material';
+import { FundListProps } from '@/types/fund';
 
-interface FundListProps {
-  funds: FundData[];
-  onRemoveFund: (code: string) => void;
-  onFundClick?: (fund: FundData) => void;
-}
-
-const FundList: React.FC<FundListProps> = ({ funds, onRemoveFund, onFundClick }) => {
+const FundList = ({ funds, onRemoveFund, onFundClick }: FundListProps) => {
 
   return (
     !funds.length
