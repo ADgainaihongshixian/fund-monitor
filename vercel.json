@@ -1,8 +1,24 @@
 {
   "rewrites": [
     {
-      "source": "/api/:path*",
-      "destination": "/api/:path*"
+      "source": "/api/eastmoney/:path*",
+      "destination": "/api/proxy"
+    },
+    {
+      "source": "/api/fundgz/:path*",
+      "destination": "/api/proxy"
+    },
+    {
+      "source": "/api/fund/:path*",
+      "destination": "/api/proxy"
+    },
+    {
+      "source": "/api/sina-metal/:path*",
+      "destination": "/api/proxy"
+    },
+    {
+      "source": "/api/sina-exchange/:path*",
+      "destination": "/api/proxy"
     },
     {
       "source": "/((?!api/).*)",
