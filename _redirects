@@ -1,0 +1,5 @@
+/api/eastmoney/*  https://fund.eastmoney.com/:splat  200
+/api/fundgz/*  http://fundgz.1234567.com.cn/:splat  200
+/api/fund/*  https://api.fund.eastmoney.com/:splat  200
+/api/sina-metal/*  https://hq.sinajs.cn/:splat  200
+/api/sina-exchange/*  https://hq.sinajs.cn/:splat  200

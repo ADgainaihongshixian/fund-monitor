@@ -1,0 +1,24 @@
+{
+  "rewrites": [
+    {
+      "source": "/api/eastmoney/(.*)",
+      "destination": "https://fund.eastmoney.com/$1"
+    },
+    {
+      "source": "/api/fundgz/(.*)",
+      "destination": "http://fundgz.1234567.com.cn/$1"
+    },
+    {
+      "source": "/api/fund/(.*)",
+      "destination": "https://api.fund.eastmoney.com/$1"
+    },
+    {
+      "source": "/api/sina-metal/(.*)",
+      "destination": "https://hq.sinajs.cn/$1"
+    },
+    {
+      "source": "/api/sina-exchange/(.*)",
+      "destination": "https://hq.sinajs.cn/$1"
+    }
+  ]
+}
