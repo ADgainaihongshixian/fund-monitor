@@ -2,23 +2,23 @@
   "rewrites": [
     {
       "source": "/api/eastmoney/:path*",
-      "destination": "/api/proxy"
+      "destination": "/api/proxy?type=eastmoney&path=:path*"
     },
     {
       "source": "/api/fundgz/:path*",
-      "destination": "/api/proxy"
+      "destination": "/api/proxy?type=fundgz&path=:path*"
     },
     {
       "source": "/api/fund/:path*",
-      "destination": "/api/proxy"
+      "destination": "/api/proxy?type=fund&path=:path*"
     },
     {
       "source": "/api/sina-metal/:path*",
-      "destination": "/api/proxy"
+      "destination": "/api/proxy?type=sina-metal&path=:path*"
     },
     {
       "source": "/api/sina-exchange/:path*",
-      "destination": "/api/proxy"
+      "destination": "/api/proxy?type=sina-exchange&path=:path*"
     },
     {
       "source": "/((?!api/).*)",

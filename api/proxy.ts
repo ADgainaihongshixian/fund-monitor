@@ -1,47 +1,25 @@
 export const config = {
   runtime: 'edge',
-  matches: [
-    {
-      source: '/api/eastmoney/:path*',
-      destination: '/api/proxy',
-    },
-    {
-      source: '/api/fundgz/:path*',
-      destination: '/api/proxy',
-    },
-    {
-      source: '/api/fund/:path*',
-      destination: '/api/proxy',
-    },
-    {
-      source: '/api/sina-metal/:path*',
-      destination: '/api/proxy',
-    },
-    {
-      source: '/api/sina-exchange/:path*',
-      destination: '/api/proxy',
-    },
-  ],
 };
 
 const API_CONFIGS: Record<string, { target: string; referer: string }> = {
-  '/api/eastmoney': {
+  'eastmoney': {
     target: 'https://fund.eastmoney.com',
     referer: 'https://fund.eastmoney.com/',
   },
-  '/api/fundgz': {
+  'fundgz': {
     target: 'http://fundgz.1234567.com.cn',
     referer: 'http://fundgz.1234567.com.cn/',
   },
-  '/api/fund': {
+  'fund': {
     target: 'https://api.fund.eastmoney.com',
     referer: 'https://fund.eastmoney.com/',
   },
-  '/api/sina-metal': {
+  'sina-metal': {
     target: 'https://hq.sinajs.cn',
     referer: 'https://finance.sina.com.cn/',
   },
-  '/api/sina-exchange': {
+  'sina-exchange': {
     target: 'https://hq.sinajs.cn',
     referer: 'https://finance.sina.com.cn/',
   },
@@ -49,29 +27,34 @@ const API_CONFIGS: Record<string, { target: string; referer: string }> = {
 
 export default async function handler(request: Request) {
   const url = new URL(request.url);
-  const pathname = url.pathname;
+  const type = url.searchParams.get('type') || '';
+  const path = url.searchParams.get('path') || '';
 
-  let targetUrl = '';
-  let referer = '';
-
-  for (const [prefix, config] of Object.entries(API_CONFIGS)) {
-    if (pathname.startsWith(prefix)) {
-      const path = pathname.replace(prefix, '');
-      targetUrl = `${config.target}${path}${url.search}`;
-      referer = config.referer;
-      break;
-    }
+  const apiConfig = API_CONFIGS[type];
+  if (!apiConfig) {
+    return new Response('Invalid API type', { status: 400 });
   }
 
-  if (!targetUrl) {
-    return new Response('Not Found', { status: 404 });
+  // 移除 type 和 path 参数，保留其他查询参数
+  const searchParams = new URLSearchParams(url.searchParams);
+  searchParams.delete('type');
+  searchParams.delete('path');
+
+  // 构建目标 URL
+  let targetUrl = apiConfig.target;
+  if (path) {
+    targetUrl += '/' + path;
+  }
+  const queryString = searchParams.toString();
+  if (queryString) {
+    targetUrl += '?' + queryString;
   }
 
   try {
     const response = await fetch(targetUrl, {
       method: request.method,
       headers: {
-        'Referer': referer,
+        'Referer': apiConfig.referer,
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
         'Accept': '*/*',
       },
@@ -89,4 +72,4 @@ export default async function handler(request: Request) {
   } catch (error) {
     return new Response(`Proxy Error: ${error}`, { status: 500 });
   }
-};
+}
