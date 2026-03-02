@@ -93,7 +93,7 @@ const FundCard = ({ fund, onRemove, onClick }: FundCardProps) => {
                 {formatPercentage(estimateChange)}
               </Typography>
               <Typography variant="caption" sx={{ color: isRising ? 'error.main' : 'success.main' }}>
-                {isRising ? '+' : ''}{estimateChange > 0 ? '上涨' : '下跌'}
+                {isRising ? '+' : '-'}{estimateChange > 0 ? '上涨' : '下跌'}
               </Typography>
             </Box>
           </Box>

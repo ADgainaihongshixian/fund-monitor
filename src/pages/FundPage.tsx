@@ -211,9 +211,11 @@ const FundPage = () => {
             <Typography variant="h6" component="h2" sx={{ fontWeight: 600, color: 'text.primary' }}>
               我的基金
             </Typography>
-            <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-              点击卡片查看详情
-            </Typography>
+            {!!funds?.length &&
+              <Typography variant="body2" sx={{ color: 'text.secondary' }}>
+                点击卡片查看详情
+              </Typography>
+            }
           </Stack>
           <FundList funds={funds} onRemoveFund={removeFund} onFundClick={handleFundClick} />
         </Box>
