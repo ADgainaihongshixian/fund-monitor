@@ -3,6 +3,7 @@ import { persist } from 'zustand/middleware';
 import preciousMetalApi from '@/services/preciousMetalApi';
 import exchangeRateApi from '@/services/exchangeRateApi';
 import { PreciousMetalStore } from '@/types/store';
+import { delayFn } from '@/utils/delayFn';
 
 export const usePreciousMetalStore = create<PreciousMetalStore>()(
   persist(
@@ -20,10 +21,10 @@ export const usePreciousMetalStore = create<PreciousMetalStore>()(
         set({ isLoading: true, error: null, exchangeRateError: null });
 
         try {
-          const [metalsResponse, rateResponse] = await Promise.all([
-            preciousMetalApi.getPreciousMetalsData(),
-            exchangeRateApi.getUSDCNYRate(),
-          ]);
+          const metalsResponse = await preciousMetalApi.getPreciousMetalsData();
+          // 在生产环境中，添加200ms延迟，避免对新浪财经API的并发请求，导致被反爬虫限制
+          await delayFn(200);
+          const rateResponse = await exchangeRateApi.getUSDCNYRate();
 
           const exchangeRateError = rateResponse.success ? null : rateResponse.message;
 
