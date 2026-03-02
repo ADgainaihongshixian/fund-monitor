@@ -30,16 +30,19 @@ const parseSinaMetalData = (responseText: string, symbol: string, config: Precio
       return null;
     }
 
-    const currentPrice = parseFloat(parts[0]) || 0;//当前价格
-    const prevClosePrice = parseFloat(parts[1]) || 0;//昨收价格
-    const bidPrice = parseFloat(parts[2]) || 0;//买一价
-    const askPrice = parseFloat(parts[3]) || 0;//卖一价
-    const highPrice = parseFloat(parts[4]) || 0;//最高价
-    const lowPrice = parseFloat(parts[5]) || 0;//最低价
+    const currentPrice = parseFloat(parts[0]) || 0; //当前价格
+    const prevClosePrice = parseFloat(parts[1]) || 0; //昨收价格
+    // @ts-ignore: 保留买一价数据供将来使用
+    const bidPrice = parseFloat(parts[2]) || 0; //买一价
+    // @ts-ignore: 保留卖一价数据供将来使用
+    const askPrice = parseFloat(parts[3]) || 0; //卖一价
+    const highPrice = parseFloat(parts[4]) || 0; //最高价
+    const lowPrice = parseFloat(parts[5]) || 0; //最低价
     const updateTime = parts[6] || '';//更新时间
-    const prevClosePriceAlt = parseFloat(parts[7]) || prevClosePrice;//昨收价格（备用）
-    const openPrice = parseFloat(parts[8]) || 0;//开盘价
+    const prevClosePriceAlt = parseFloat(parts[7]) || prevClosePrice; //昨收价格（备用）
+    const openPrice = parseFloat(parts[8]) || 0; //开盘价
     const date = parts[12] || ''; //日期
+    // @ts-ignore: 保留名称数据供将来使用
     const name = parts[13] || config.name; //名称
 
     if (!currentPrice) return null;
