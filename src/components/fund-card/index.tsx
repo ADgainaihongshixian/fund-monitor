@@ -1,7 +1,7 @@
 import { formatNumber, formatPercentage } from '@/utils/formatter';
 import { FundCardProps } from '@/types/fund';
 import { TrendingUp, TrendingDown, Close, AccessTime, AccountBalance } from '@mui/icons-material';
-import { Card, CardContent, IconButton, Badge, Typography, Box } from '@mui/material';
+import { Card, CardContent, IconButton, Badge, Typography, Box, Divider } from '@mui/material';
 
 const FundCard = ({ fund, onRemove, onClick }: FundCardProps) => {
   const { code, name, estimateValue, estimateChange, isRising } = fund;
@@ -29,23 +29,23 @@ const FundCard = ({ fund, onRemove, onClick }: FundCardProps) => {
       onClick={() => onClick?.(fund)}
     >
       <CardContent sx={{ p: 2.5 }}>
-        <div className="flex justify-between items-start mb-5">
-          <div className="flex-1 min-w-0">
-            <div className="flex items-start gap-2 mb-2">
+        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', mb: 3 }}>
+          <Box sx={{ flex: 1, minWidth: 0 }}>
+            <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: 1, mb: 1 }}>
               <Typography variant="h6" component="h3" sx={{ fontWeight: 600, color: 'text.primary', fontSize: '1.125rem', flex: 1, lineHeight: 1.3, whiteSpace: 'nowrap', textOverflow: 'ellipsis', overflow: 'hidden' }}>
                 {name}
               </Typography>
               <Badge variant="standard" color="info" sx={{ fontSize: '0.75rem', border: '1px solid', borderColor: 'info.main', backgroundColor: 'background.paper', color: 'info.main', padding: '0 4px', borderRadius: '4px', flexShrink: 0, '& .MuiBadge-badge': { border: '1px solid', borderColor: 'info.main', backgroundColor: 'background.paper', color: 'info.main', padding: '0 4px', borderRadius: '4px' } }}>
                 {code}
               </Badge>
-            </div>
-            <div className={`flex items-center gap-2 ${isRising ? 'text-danger' : 'text-success'}`}>
-              {isRising ? <TrendingUp className="h-4 w-4" /> : <TrendingDown className="h-4 w-4" />}
+            </Box>
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, color: isRising ? 'error.main' : 'success.main' }}>
+              {isRising ? <TrendingUp sx={{ height: 16, width: 16 }} /> : <TrendingDown sx={{ height: 16, width: 16 }} />}
               <Typography variant="body2" sx={{ fontWeight: 500, color: isRising ? 'error.main' : 'success.main' }}>
                 {isRising ? '上涨' : '下跌'}
               </Typography>
-            </div>
-          </div>
+            </Box>
+          </Box>
           <IconButton
             size="small"
             onClick={(e) => {
@@ -66,53 +66,55 @@ const FundCard = ({ fund, onRemove, onClick }: FundCardProps) => {
             }}
             aria-label="remove fund"
           >
-            <Close className="h-4 w-4" />
+            <Close sx={{ height: 20, width: 20 }} />
           </IconButton>
-        </div>
+        </Box>
 
-        <div className="flex justify-between items-end mb-5">
-          <div className="transform transition-transform duration-300 hover:translate-y-[-2px]">
+        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end' }}>
+          <Box sx={{ transform: 'transition', transition: 'transform 0.3s ease', '&:hover': { transform: 'translateY(-2px)' } }}>
             <Typography variant="body2" sx={{ color: 'info.main', mb: 0.5 }}>
               实时估值
             </Typography>
-            <div className="flex items-baseline gap-2">
-              <Typography variant="h4" component="p" sx={{ fontWeight: 700, color: 'text.primary', fontSize: '1.875rem' }}>
+            <Box sx={{ display: 'flex', alignItems: 'baseline', gap: 1 }}>
+              <Typography variant="h4" component="p" sx={{ fontWeight: 700, color: 'text.primary', fontSize: '1.5rem' }}>
                 {formatNumber(estimateValue)}
               </Typography>
               <Typography variant="caption" sx={{ color: 'info.main' }}>
                 元
               </Typography>
-            </div>
-          </div>
-          <div className={`text-right transform transition-transform duration-300 hover:translate-y-[-2px] ${isRising ? 'text-danger' : 'text-success'}`}>
+            </Box>
+          </Box>
+          <Box sx={{ textAlign: 'right', transform: 'transition', transition: 'transform 0.3s ease', '&:hover': { transform: 'translateY(-2px)' }, color: isRising ? 'error.main' : 'success.main' }}>
             <Typography variant="body2" sx={{ mb: 0.5 }}>
               涨跌幅
             </Typography>
-            <div className="flex items-baseline justify-end gap-2">
-              <Typography variant="h4" component="p" sx={{ fontWeight: 700, fontSize: '1.875rem', color: isRising ? 'error.main' : 'success.main' }}>
+            <Box sx={{ display: 'flex', alignItems: 'baseline', justifyContent: 'flex-end', gap: 1 }}>
+              <Typography variant="h4" component="p" sx={{ fontWeight: 700, fontSize: '1.5rem', color: isRising ? 'error.main' : 'success.main' }}>
                 {formatPercentage(estimateChange)}
               </Typography>
               <Typography variant="caption" sx={{ color: isRising ? 'error.main' : 'success.main' }}>
                 {isRising ? '+' : ''}{estimateChange > 0 ? '上涨' : '下跌'}
               </Typography>
-            </div>
-          </div>
-        </div>
+            </Box>
+          </Box>
+        </Box>
 
-        <div className="flex justify-between items-center pt-4 border-t border-border-color">
-          <div className="flex items-center gap-2">
-            <AccessTime className="h-3.5 w-3.5 text-info" />
-            <Typography variant="caption" sx={{ color: 'info.main' }}>
+        <Divider sx={{ mt: 2, mb: 2 }} />
+
+        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+            <AccessTime sx={{ height: 14, width: 14, color: 'text.secondary' }} />
+            <Typography variant="caption" sx={{ color: 'text.secondary' }}>
               更新于: {fund.lastUpdate}
             </Typography>
-          </div>
-          <div className="flex items-center gap-1.5">
-            <AccountBalance className="h-3.5 w-3.5 text-info" />
-            <Typography variant="caption" sx={{ color: 'info.main' }}>
+          </Box>
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+            <AccountBalance sx={{ height: 14, width: 14, color: 'text.secondary' }} />
+            <Typography variant="caption" sx={{ color: 'text.secondary' }}>
               基金
             </Typography>
-          </div>
-        </div>
+          </Box>
+        </Box>
       </CardContent>
 
       {/* 悬停时的渐变效果 */}
