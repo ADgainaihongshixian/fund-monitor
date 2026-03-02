@@ -174,13 +174,13 @@ const PreciousMetalCard = ({ metal }: PreciousMetalCardProps) => {
         <Stack direction="row" justifyContent="space-between" alignItems="center">
           <Stack direction="row" alignItems="center" spacing={1}>
             <AccessTime sx={{ fontSize: 14, color: 'text.secondary' }} />
-            <Typography variant="caption" sx={{ color: 'text.secondary' }}>
+            <Typography variant="caption" sx={{ color: 'text.secondary', lineHeight: 1 }}>
               更新于: {lastUpdate}
             </Typography>
           </Stack>
           <Stack direction="row" alignItems="center" spacing={0.5}>
             <Diamond sx={{ fontSize: 14, color: 'text.secondary' }} />
-            <Typography variant="caption" sx={{ color: 'text.secondary' }}>
+            <Typography variant="caption" sx={{ color: 'text.secondary', lineHeight: 1 }}>
               贵金属
             </Typography>
           </Stack>

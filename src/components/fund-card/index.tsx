@@ -103,14 +103,14 @@ const FundCard = ({ fund, onRemove, onClick }: FundCardProps) => {
 
         <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-            <AccessTime sx={{ height: 14, width: 14, color: 'text.secondary' }} />
-            <Typography variant="caption" sx={{ color: 'text.secondary' }}>
+            <AccessTime sx={{ fontSize: 14, color: 'text.secondary' }} />
+            <Typography variant="caption" sx={{ color: 'text.secondary', lineHeight: 1 }}>
               更新于: {fund.lastUpdate}
             </Typography>
           </Box>
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-            <AccountBalance sx={{ height: 14, width: 14, color: 'text.secondary' }} />
-            <Typography variant="caption" sx={{ color: 'text.secondary' }}>
+            <AccountBalance sx={{ fontSize: 14, color: 'text.secondary' }} />
+            <Typography variant="caption" sx={{ color: 'text.secondary', lineHeight: 1 }}>
               基金
             </Typography>
           </Box>
