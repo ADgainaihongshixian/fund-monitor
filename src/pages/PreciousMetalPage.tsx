@@ -1,21 +1,42 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import PreciousMetalList from '@/components/precious-metal-list';
 import { usePreciousMetalData } from '@/hooks/usePreciousMetalData';
 import { usePreciousMetalAutoRefresh } from '@/hooks/usePreciousMetalAutoRefresh';
+import { usePriceNotification } from '@/hooks/usePriceNotification';
 import usePreciousMetalStore from '@/stores/preciousMetalStore';
 import { GOLD_COLOR } from '@/constant/enum';
 import SecondaryCard from '@/components/common/secondary-card';
 import ErrorAlert from '@/components/common/error-alert';
 import SettingDialog from '@/components/common/setting-dialog';
+import PriceNotificationDialog from '@/components/common/price-notification-dialog';
 import BodyCom from '@/components/common/body-com';
-import { Refresh, Settings, Warning } from '@mui/icons-material';
-import { Button, Container, Box, Typography, CircularProgress, Stack, Alert } from '@mui/material';
+import { Refresh, Settings, Warning, NotificationsActive, Notifications } from '@mui/icons-material';
+import { Button, Container, Box, Typography, CircularProgress, Stack, Alert, Badge, Tooltip } from '@mui/material';
+import { calculateCnyPrice } from '@/utils/calculateCnyPrice';
 
 const PreciousMetalPage = () => {
   const { metals, isLoading, lastUpdate, error, refreshMetals, exchangeRate, exchangeRateError } = usePreciousMetalData();
   const { isAutoRefreshEnabled } = usePreciousMetalAutoRefresh();
   const { autoRefresh, refreshInterval, setAutoRefresh, setRefreshInterval } = usePreciousMetalStore();
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+  const [isNotificationOpen, setIsNotificationOpen] = useState(false);
+
+  const currentGoldPrice = useMemo(() => {
+    const goldMetal = metals.find(m => m.symbol === 'XAU');
+
+    if (goldMetal) {
+      return calculateCnyPrice(goldMetal.currentPrice, +(exchangeRate?.rate?.toFixed(4) ?? 6.90));
+    }
+    return null;
+  }, [metals]);
+
+  const {
+    targetPrice,
+    isMonitoring,
+    hasNotified,
+    setTargetPrice,
+    clearNotification,
+  } = usePriceNotification(currentGoldPrice);
 
   const handleAutoRefreshToggle = () => {
     setAutoRefresh(!autoRefresh);
@@ -28,14 +49,26 @@ const PreciousMetalPage = () => {
   return (
     <BodyCom
       otherChildren={
-        <SettingDialog
-          isSettingsOpen={isSettingsOpen}
-          setIsSettingsOpen={setIsSettingsOpen}
-          autoRefresh={autoRefresh}
-          handleAutoRefreshToggle={handleAutoRefreshToggle}
-          refreshInterval={refreshInterval}
-          handleRefreshIntervalChange={handleRefreshIntervalChange}
-        />
+        <>
+          <SettingDialog
+            isSettingsOpen={isSettingsOpen}
+            setIsSettingsOpen={setIsSettingsOpen}
+            autoRefresh={autoRefresh}
+            handleAutoRefreshToggle={handleAutoRefreshToggle}
+            refreshInterval={refreshInterval}
+            handleRefreshIntervalChange={handleRefreshIntervalChange}
+          />
+          <PriceNotificationDialog
+            open={isNotificationOpen}
+            onClose={() => setIsNotificationOpen(false)}
+            onConfirm={setTargetPrice}
+            onClear={clearNotification}
+            currentPrice={currentGoldPrice}
+            targetPrice={targetPrice}
+            isMonitoring={isMonitoring}
+            hasNotified={hasNotified}
+          />
+        </>
       }
     >
       <Container maxWidth="lg" sx={{ px: { xs: 2, sm: 0, md: 0 } }}>
@@ -96,6 +129,42 @@ const PreciousMetalPage = () => {
             >
               设置
             </Button>
+            <Tooltip title={isMonitoring && !hasNotified ? `监控中：¥${targetPrice?.toFixed(2)}/克` : '价格提醒'}>
+              <Button
+                variant="outlined"
+                onClick={() => setIsNotificationOpen(true)}
+                startIcon={
+                  isMonitoring && !hasNotified ? (
+                    <Badge variant="dot" color="error" overlap="circular">
+                      <NotificationsActive />
+                    </Badge>
+                  ) : (
+                    <Notifications />
+                  )
+                }
+                sx={{
+                  borderRadius: '0.75rem',
+                  borderWidth: '1.5px',
+                  borderColor: isMonitoring && !hasNotified ? 'primary.main' : 'divider',
+                  color: isMonitoring && !hasNotified ? 'primary.main' : 'text.primary',
+                  textTransform: 'none',
+                  fontSize: '0.9375rem',
+                  fontWeight: 500,
+                  px: 2,
+                  py: 1.5,
+                  transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+                  '&:hover': {
+                    borderColor: GOLD_COLOR,
+                    backgroundColor: 'rgba(245, 158, 11, 0.04)',
+                    borderWidth: '1.5px',
+                    transform: 'translateY(-2px)',
+                    boxShadow: '0 4px 12px rgba(0, 0, 0, 0.08)',
+                  },
+                }}
+              >
+                通知
+              </Button>
+            </Tooltip>
           </Stack>
         </Stack>
 

@@ -1,13 +1,10 @@
 import { ApiResponse, EastmoneyHistoryResponse } from '@/types';
 import { FundData, FundSearchResult } from '@/types/fund';
 import { FUND_BASE_URL, FUND_BASE_SEARCH_URL, FUND_BASE_HISTORY_URL } from '@/constant/api';
-import { FUND_HISTORY_CACHE_EXPIRY_TIME } from '@/constant/enum';
+import { FUND_HISTORY_CACHE_EXPIRY_TIME, FUND_LIST_CACHE_KEY, FUND_LIST_CACHE_EXPIRY_TIME } from '@/constant/enum';
 import { createApiClient } from '@/utils/apiClient';
 import { requestInterceptor } from '@/utils/requestInterceptor';
 import { handleApiError } from '@/utils/handleApiError';
-
-const FUND_LIST_CACHE_KEY = 'fund_list_cache';
-const FUND_LIST_CACHE_EXPIRY_TIME = 24 * 60 * 60 * 1000; // 24小时
 
 interface FundListCache {
   data: FundSearchResult[];
@@ -276,7 +273,7 @@ const fundApi = {
     const keywordLower = keyword.trim().toLowerCase();
     return allFunds.filter(
       fund => fund.code.toLowerCase().includes(keywordLower) ||
-              fund.name.toLowerCase().includes(keywordLower)
+        fund.name.toLowerCase().includes(keywordLower)
     );
   },
 
@@ -293,7 +290,7 @@ const fundApi = {
 
       // 获取全量数据（会使用缓存）
       const allFundsResponse = await fundApi.getAllFunds();
-      
+
       if (!allFundsResponse.success || !allFundsResponse.data.length) {
         return {
           success: false,

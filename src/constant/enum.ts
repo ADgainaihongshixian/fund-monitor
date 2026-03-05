@@ -23,3 +23,10 @@ export const PRECIOUS_METALS: PreciousMetalConfig[] = [
     { symbol: 'XPD', name: '钯金期货', nameEn: 'Palladium', apiCode: 'XPD' },
 ];
 
+export const FUND_LIST_CACHE_KEY = 'fund_list_cache';
+
+export const FUND_LIST_CACHE_EXPIRY_TIME = 24 * 60 * 60 * 1000; // 24小时
+
+export const STORAGE_KEY = 'price-notification-target';
+export const NOTIFICATION_SENT_KEY = 'price-notification-sent';
+
