@@ -4,7 +4,6 @@
  * 适用于基金数据、搜索结果、历史数据等高频访问但更新频率较低的数据场景。
  */
 
-// 缓存项类型
 interface CacheItem<T> {
   data: T;
   timestamp: number;

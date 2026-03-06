@@ -15,6 +15,10 @@ import { Close, Info, Settings } from "@mui/icons-material";
 import { TIME_INTERVAL_MAP } from '@/constant/enum';
 import { SettingDialogProps } from '@/types/common';
 
+/**
+ * 设置对话框组件
+ * 提供用户配置自动刷新和刷新时间间隔的功能
+ */
 const SettingDialog = (props: SettingDialogProps) => {
     const { isSettingsOpen, setIsSettingsOpen, autoRefresh, handleAutoRefreshToggle, refreshInterval, handleRefreshIntervalChange, tips = '开启后，系统将自动刷新贵金属行情数据' } = props;
 

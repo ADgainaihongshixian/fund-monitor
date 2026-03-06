@@ -9,6 +9,13 @@ import { handleApiError } from '@/utils/handleApiError';
 const apiClient = createApiClient({ baseURL: PRECIOUS_METAL_BASE_URL, accept: '*/*' });
 requestInterceptor(apiClient);
 
+/**
+ * 解析新浪 preciousMetal 数据文本，提取 preciousMetal 数据
+ * @param responseText 包含 preciousMetal 数据的文本响应
+ * @param symbol preciousMetal 符号（例如 'AU'）
+ * @param config preciousMetal 配置对象，包含名称等信息
+ * @returns 解析后的 preciousMetal 数据对象，包含当前价格、变化、变化百分比等，或null表示解析失败
+ */
 const parseSinaMetalData = (responseText: string, symbol: string, config: PreciousMetalConfig): PreciousMetalData | null => {
   try {
     const sinaCode = SINA_METAL_CODES[symbol];
@@ -73,6 +80,10 @@ const parseSinaMetalData = (responseText: string, symbol: string, config: Precio
   }
 };
 
+/**
+ * preciousMetal API服务
+ * 提供获取 preciousMetal 数据的功能
+ */
 const preciousMetalApi = {
   getPreciousMetalsData: async (symbols: string[] = ['XAU', 'XAG', 'XPT', 'XPD']): Promise<ApiResponse<PreciousMetalData[]>> => {
     try {

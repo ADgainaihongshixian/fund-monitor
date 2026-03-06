@@ -10,27 +10,13 @@ import { useFundData } from '@/hooks/useFundData';
 import { useAutoRefresh } from '@/hooks/useAutoRefresh';
 import { FundData } from '@/types/fund';
 import useFundStore from '@/stores/fundStore';
-import {
-  AccountBalance,
-  Refresh,
-  Add,
-  Settings,
-  Close,
-} from '@mui/icons-material';
-import {
-  Button,
-  IconButton,
-  Container,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  Box,
-  Typography,
-  Badge,
-  CircularProgress,
-  Stack,
-} from '@mui/material';
+import { AccountBalance, Refresh, Add, Settings, Close } from '@mui/icons-material';
+import { Button, IconButton, Container, Dialog, DialogTitle, DialogContent, Box, Typography, Badge, CircularProgress, Stack } from '@mui/material';
 
+/**
+ * 基金页面
+ * 展示基金列表、图表、添加基金弹窗、基金详情弹窗、设置弹窗等功能
+ */
 const FundPage = () => {
   const { funds, isLoading, lastUpdate, error, refreshFunds, removeFund, addFund } = useFundData();
   const { isAutoRefreshEnabled } = useAutoRefresh();

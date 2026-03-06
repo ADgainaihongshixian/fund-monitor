@@ -1,5 +1,9 @@
 import { useState, useLayoutEffect, useRef } from 'react';
 
+/**
+ * 响应式尺寸观察钩子
+ * 用于监听元素尺寸变化，返回当前元素的宽度和高度
+ */
 export const useResizeObserver = () => {
     const [size, setSize] = useState({ width: 0, height: 0 });
     const targetRef = useRef<HTMLDivElement>(null);

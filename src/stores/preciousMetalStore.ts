@@ -5,6 +5,10 @@ import exchangeRateApi from '@/services/exchangeRateApi';
 import { PreciousMetalStore } from '@/types/store';
 import { delayFn } from '@/utils/delayFn';
 
+/**
+ * 贵金属状态管理
+ * 管理用户添加的贵金属列表、贵金属数据加载状态、刷新配置等
+ */
 export const usePreciousMetalStore = create<PreciousMetalStore>()(
   persist(
     (set) => ({

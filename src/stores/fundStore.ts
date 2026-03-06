@@ -5,6 +5,10 @@ import { FundSearchResult } from '@/types/fund';
 import { FundStore } from "@/types/store";
 import { generateCacheKey, fundDataCache } from '@/utils/cache';
 
+/**
+ * 基金状态管理
+ * 管理用户添加的基金列表、基金数据加载状态、刷新配置等
+ */
 export const useFundStore = create<FundStore>()(
   persist(
     (set, get) => ({

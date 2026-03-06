@@ -15,6 +15,10 @@ import {
   Stack
 } from '@mui/material';
 
+/**
+ * 添加基金对话框组件
+ * 提供搜索基金、添加基金和刷新基金列表的功能
+ */
 const AddFund = ({ isOpen, onClose, onAddFund }: AddFundProps) => {
   const [isAdding, setIsAdding] = useState(false);
   const [successMessage, setSuccessMessage] = useState('');

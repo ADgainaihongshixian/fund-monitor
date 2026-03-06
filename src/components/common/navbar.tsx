@@ -27,6 +27,10 @@ const navItems: NavItem[] = [
     { label: '贵金属', path: '/precious-metal', icon: <Diamond />, isPreciousMetal: true },
 ];
 
+/**
+ * 导航栏组件
+ * 提供基金和贵金属导航功能，支持移动端抽屉菜单
+ */
 const Navbar = (props: NavbarProps) => {
     const { setNavbarHeight } = props;
     const [mobileOpen, setMobileOpen] = useState(false);

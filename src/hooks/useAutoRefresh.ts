@@ -1,7 +1,10 @@
 import { useEffect, useRef } from 'react';
 import useFundStore from '@/stores/fundStore';
 
-// 自动刷新钩子
+/**
+ * 自动刷新钩子
+ * 用于根据用户设置的刷新间隔自动刷新基金数据
+ */
 export const useAutoRefresh = () => {
   const { autoRefresh, refreshInterval, refreshFunds } = useFundStore();
   const intervalRef = useRef<number | null>(null);

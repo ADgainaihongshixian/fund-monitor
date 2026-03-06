@@ -23,6 +23,10 @@ import {
   Divider,
 } from '@mui/material';
 
+/**
+ * 贵金属卡片组件
+ * 展示贵金属的基本信息、估值变化和操作按钮
+ */
 const PreciousMetalCard = ({ metal }: PreciousMetalCardProps) => {
   const { name, nameEn, currentPrice, openPrice, highPrice, lowPrice, prevClosePrice, change, changePercent, lastUpdate, isRising } = metal;
   const { exchangeRate } = usePreciousMetalData();

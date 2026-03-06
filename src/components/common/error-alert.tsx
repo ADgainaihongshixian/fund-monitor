@@ -2,6 +2,10 @@ import { Alert, Stack, Typography } from "@mui/material";
 import { ErrorOutline } from "@mui/icons-material";
 import { ErrorAlertProps } from "@/types/common";
 
+/**
+ * 错误提示组件
+ * 展示操作失败的错误信息，支持自定义错误消息
+ */
 const ErrorAlert = (props: ErrorAlertProps) => {
     const { error } = props;
     return (

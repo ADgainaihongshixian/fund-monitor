@@ -3,6 +3,10 @@ import { AccountBalance, CheckCircle, Search } from '@mui/icons-material';
 import { Box, Typography, Grid, Paper } from '@mui/material';
 import { FundListProps } from '@/types/fund';
 
+/**
+ * 基金列表组件
+ * 展示用户添加的基金卡片列表，支持删除和点击操作
+ */
 const FundList = ({ funds, onRemoveFund, onFundClick }: FundListProps) => {
 
   return (

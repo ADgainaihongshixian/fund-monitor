@@ -1,4 +1,7 @@
-// API响应类型
+/**
+ * API响应类型
+ * @template T 响应数据的类型
+ */
 export interface ApiResponse<T> {
   success: boolean;
   data: T;

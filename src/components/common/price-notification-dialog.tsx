@@ -24,6 +24,10 @@ interface PriceNotificationDialogProps {
   hasNotified: boolean;
 }
 
+/**
+ * 价格监控通知对话框组件
+ * 提供设置目标价格、确认设置和清除设置的功能
+ */
 const PriceNotificationDialog = ({
   open,
   onClose,

@@ -1,13 +1,12 @@
 import PreciousMetalCard from '@/components/precious-metal-card';
 import { PreciousMetalListProps } from '@/types/preciousMetal';
 import { Diamond } from '@mui/icons-material';
-import {
-  Box,
-  Grid,
-  Typography,
-  Paper,
-} from '@mui/material';
+import { Box, Grid, Typography, Paper } from '@mui/material';
 
+/**
+ * 贵金属列表组件
+ * 展示用户添加的贵金属卡片列表，支持删除和点击操作
+ */
 const PreciousMetalList = ({ metals }: PreciousMetalListProps) => {
   return (
     !!metals.length ?

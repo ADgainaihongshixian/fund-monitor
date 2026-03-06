@@ -1,8 +1,7 @@
-import { ReactNode } from "react";
-
 /**
  * 这个文件时定义通用组件属性接口，对应components/common/
  */
+import { ReactNode } from "react";
 export interface BodyComProps {
     children?: ReactNode | string | number | null;
     otherChildren?: ReactNode | string | number | null;

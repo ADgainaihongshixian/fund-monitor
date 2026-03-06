@@ -6,7 +6,6 @@
 
 export const handleApiError = (error: any): string => {
     if (error.response) {
-        // 服务器返回错误状态码
         switch (error.response.status) {
             case 400:
                 return '请求参数错误';

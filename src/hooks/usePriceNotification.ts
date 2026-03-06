@@ -7,6 +7,11 @@ interface PriceNotificationState {
   hasNotified: boolean;
 }
 
+/**
+ * 价格通知钩子
+ * 用于监控金价是否低于用户设置的目标价格，并在满足条件时发送桌面通知
+ */
+
 export const usePriceNotification = (currentGoldPrice: number | null) => {
   const [state, setState] = useState<PriceNotificationState>(() => {
     const savedTarget = localStorage.getItem(STORAGE_KEY);

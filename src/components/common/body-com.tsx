@@ -3,6 +3,10 @@ import { Box } from "@mui/material"
 import Navbar from "@/components/common/navbar";
 import { BodyComProps } from "@/types/common";
 
+/**
+ * 页面主体组件
+ * 包含导航栏、主要内容区域和可选的页脚
+ */
 const BodyCom = (props: BodyComProps) => {
     const { children = null, otherChildren = null, footer = null } = props;
     const [navbarHeight, setNavbarHeight] = useState(0);

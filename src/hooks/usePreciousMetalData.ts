@@ -1,6 +1,10 @@
 import { useCallback, useEffect } from 'react';
 import usePreciousMetalStore from '@/stores/preciousMetalStore';
 
+/**
+ * 贵金属数据钩子
+ * 用于获取和管理贵金属数据，包括刷新、获取汇率等操作
+ */
 export const usePreciousMetalData = () => {
   const {
     metals,

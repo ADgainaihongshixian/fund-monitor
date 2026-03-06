@@ -5,6 +5,7 @@ import { usePreciousMetalAutoRefresh } from '@/hooks/usePreciousMetalAutoRefresh
 import { usePriceNotification } from '@/hooks/usePriceNotification';
 import usePreciousMetalStore from '@/stores/preciousMetalStore';
 import { GOLD_COLOR } from '@/constant/enum';
+import { calculateCnyPrice } from '@/utils/calculateCnyPrice';
 import SecondaryCard from '@/components/common/secondary-card';
 import ErrorAlert from '@/components/common/error-alert';
 import SettingDialog from '@/components/common/setting-dialog';
@@ -12,8 +13,11 @@ import PriceNotificationDialog from '@/components/common/price-notification-dial
 import BodyCom from '@/components/common/body-com';
 import { Refresh, Settings, Warning, NotificationsActive, Notifications } from '@mui/icons-material';
 import { Button, Container, Box, Typography, CircularProgress, Stack, Alert, Badge, Tooltip } from '@mui/material';
-import { calculateCnyPrice } from '@/utils/calculateCnyPrice';
 
+/**
+ * 贵金属页面
+ * 展示贵金属列表、图表、添加贵金属弹窗、贵金属详情弹窗、设置弹窗等功能
+ */
 const PreciousMetalPage = () => {
   const { metals, isLoading, lastUpdate, error, refreshMetals, exchangeRate, exchangeRateError } = usePreciousMetalData();
   const { isAutoRefreshEnabled } = usePreciousMetalAutoRefresh();

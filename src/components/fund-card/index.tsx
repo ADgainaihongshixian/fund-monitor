@@ -3,6 +3,10 @@ import { FundCardProps } from '@/types/fund';
 import { TrendingUp, TrendingDown, Close, AccessTime, AccountBalance } from '@mui/icons-material';
 import { Card, CardContent, IconButton, Badge, Typography, Box, Divider } from '@mui/material';
 
+/**
+ * 基金卡片组件
+ * 展示基金的基本信息、估值变化和操作按钮
+ */
 const FundCard = ({ fund, onRemove, onClick }: FundCardProps) => {
   const { code, name, estimateValue, estimateChange, isRising } = fund;
 

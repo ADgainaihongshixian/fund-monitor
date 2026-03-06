@@ -13,7 +13,10 @@ import {
   CircularProgress
 } from '@mui/material';
 
-
+/**
+ * 基金估值图表组件
+ * 展示基金的历史估值数据，支持7天、30天和90天时间范围
+ */
 const Chart = ({ fundCode, fundName }: ChartProps) => {
   const [historyData, setHistoryData] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);

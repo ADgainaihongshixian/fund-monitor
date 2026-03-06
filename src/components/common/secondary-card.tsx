@@ -2,6 +2,10 @@ import { CurrencyExchange, Schedule } from "@mui/icons-material";
 import { Box, Card, CardContent, Chip, Stack, Typography } from "@mui/material";
 import { SecondaryCardProps } from "@/types/common";
 
+/**
+ * 二级卡片组件
+ * 展示自动刷新状态、最后更新时间、品种数量和汇率
+ */
 const SecondaryCard = (props: SecondaryCardProps) => {
     const { isAutoRefreshEnabled, lastUpdate, length = 0, rate = 0 } = props;
     return (

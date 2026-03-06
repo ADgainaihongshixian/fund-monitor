@@ -8,6 +8,11 @@ import { handleApiError } from '@/utils/handleApiError';
 const apiClient = createApiClient({ baseURL: EXCHANGE_RATE_BASE_URL, accept: '*/*' });
 requestInterceptor(apiClient);
 
+/**
+ * 解析汇率数据文本，提取美元兑人民币汇率和更新时间
+ * @param responseText 包含汇率数据的文本响应
+ * @returns 解析后的汇率数据对象，包含汇率和更新时间，或null表示解析失败
+ */
 const parseExchangeRateData = (responseText: string): ExchangeRateData | null => {
   try {
     const pattern = /var hq_str_USDCNY="([^"]*)"/;
@@ -40,6 +45,10 @@ const parseExchangeRateData = (responseText: string): ExchangeRateData | null =>
   }
 };
 
+/**
+ * 汇率API服务
+ * 提供获取美元兑人民币汇率的功能
+ */
 const exchangeRateApi = {
   getUSDCNYRate: async (): Promise<ApiResponse<ExchangeRateData>> => {
     try {

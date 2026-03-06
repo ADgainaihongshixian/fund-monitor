@@ -14,6 +14,10 @@ import {
   Box
 } from '@mui/material';
 
+/**
+ * 基金搜索组件
+ * 提供基金搜索功能，展示搜索结果并支持选择基金
+ */
 const SearchFund = ({ onSearch, onSelect, totalFunds }: SearchFundProps) => {
   const [keyword, setKeyword] = useState('');
   const [results, setResults] = useState<FundSearchResult[]>([]);

@@ -1,7 +1,10 @@
 import { useCallback, useEffect } from 'react';
 import useFundStore from '@/stores/fundStore';
 
-// 基金数据钩子
+/**
+ * 基金数据钩子
+ * 用于获取和管理基金数据，包括刷新、添加、删除、搜索等操作
+ */
 export const useFundData = () => {
   const {
     funds,
