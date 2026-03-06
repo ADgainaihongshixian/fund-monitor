@@ -45,12 +45,38 @@ export const usePriceNotification = (currentGoldPrice: number | null) => {
 
   const sendNotification = useCallback((price: number) => {
     if (Notification.permission === 'granted') {
-      new Notification('补仓提醒', {
-        body: `当前金价已低于您的目标价格 ¥${price.toFixed(2)}/克，请关注！`,
-        icon: '/finance.svg',
-        tag: 'gold-price-alert',
-        requireInteraction: true,
-      });
+      try {
+        const notification = new Notification('补仓提醒', {
+          body: `当前金价已低于您的目标价格 ¥${price.toFixed(2)}/克，请关注！`,
+          icon: '/finance.svg',
+          tag: 'gold-price-alert',
+          requireInteraction: true,
+        });
+
+        notification.onclick = () => {
+          try {
+            window.focus();
+
+            const currentPath = window.location.pathname;
+            if (currentPath !== '/precious-metal') {
+              const baseUrl = window.location.origin;
+              window.location.href = `${baseUrl}/precious-metal`;
+            }
+
+            notification.close();
+          } catch (error) {
+            console.error('处理通知点击事件失败:', error);
+          }
+        };
+
+        notification.onerror = (error) => {
+          console.error('通知显示失败:', error);
+        };
+      } catch (error) {
+        console.error('创建通知失败:', error);
+      }
+    } else {
+      console.warn('通知权限未授予，当前权限:', Notification.permission);
     }
   }, []);
 
